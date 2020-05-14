@@ -1,0 +1,20 @@
+{
+  "name": "alright-bet",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "repository": "https://github.com/ajchili/alright-bet",
+  "author": "Kirin Patel <kirinpatel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.1",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "tsc": "^1.20150623.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.2"
+  }
+}
