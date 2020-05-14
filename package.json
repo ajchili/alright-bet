@@ -14,13 +14,16 @@
     "start": "node ./dist/index.js"
   },
   "dependencies": {
+    "client-oauth2": "^4.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
     "pg": "^8.2.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.6",
     "@types/node": "^14.0.1",
+    "@types/node-fetch": "^2.5.7",
     "@types/pg": "^7.14.3",
     "nodemon": "^2.0.3",
     "ts-node": "^8.10.1",
