@@ -1,18 +1,18 @@
 {
   "name": "alright-bet",
   "version": "0.0.1",
-  "main": "src/index.tsx",
+  "main": "src/server.tsx",
   "repository": "https://github.com/ajchili/alright-bet",
   "author": "Kirin Patel <kirinpatel@gmail.com>",
   "license": "MIT",
   "scripts": {
     "clear": "rm -rf ./dist",
-    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "yarn clear && tsc && yarn build:web",
-    "build:web": "cd web && yarn && yarn build",
+    "lint": "tslint -c tslint.json -p tsconfig.server.json --fix",
+    "build": "yarn clear && tsc --project tsconfig.server.json && yarn build:web",
+    "build:web": "react-scripts build ",
     "dev": "nodemon --watch src -e ts,tsx --exec yarn dev:start",
-    "dev:start": "ts-node .",
-    "start": "node ./dist/src/index.js"
+    "dev:start": "ts-node --project tsconfig.server.json .",
+    "start": "node ./dist/src/server.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -25,7 +25,8 @@
     "node-fetch": "^2.6.0",
     "pg": "^8.2.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
@@ -44,5 +45,20 @@
   },
   "engines": {
     "node": "13.11.0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
