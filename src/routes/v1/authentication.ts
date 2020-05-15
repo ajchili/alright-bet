@@ -34,12 +34,8 @@ router.get("/callback", async (req: Request, res: Response) => {
 });
 
 router.get("/logout", (req: Request, res: Response) => {
-  req.session.destroy((err: Error) => {
-    if (err != null) {
-      delete req.session.accessToken;
-    }
-    res.redirect("/");
-  });
+  delete req.session.accessToken;
+  res.redirect("/");
 });
 
 export default router;

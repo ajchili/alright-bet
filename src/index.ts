@@ -11,7 +11,13 @@ import AuthenticationRouter from "./routes/v1/authentication";
 const app: Express = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(session({ secret: "insecureSecret" }));
+app.use(
+  session({
+    resave: true,
+    secret: "insecureSecret",
+    saveUninitialized: false,
+  })
+);
 const PORT: string = process.env.PORT || "80";
 
 app.get("/", (req: Request, res: Response) => {
