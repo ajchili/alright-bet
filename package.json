@@ -8,22 +8,26 @@
   "scripts": {
     "clear": "rm -rf ./dist",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "npm run clear && tsc",
-    "dev": "nodemon --watch src -e ts,tsx --exec npm run dev:start",
+    "build": "yarn clear && tsc",
+    "dev": "nodemon --watch src -e ts,tsx --exec yarn dev:start",
     "dev:start": "ts-node .",
     "start": "node ./dist/index.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "client-oauth2": "^4.3.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.0",
     "pg": "^8.2.0"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",
+    "@types/express-session": "^1.17.0",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "^14.0.1",
     "@types/node-fetch": "^2.5.7",
