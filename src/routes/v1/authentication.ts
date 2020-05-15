@@ -29,7 +29,6 @@ router.get("/callback", async (req: Request, res: Response) => {
     req.session.accessToken = accessToken;
     res.redirect("/");
   } catch (err) {
-    console.error("/callback:", err);
     res.status(500).json(err);
   }
 });
