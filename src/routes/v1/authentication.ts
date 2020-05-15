@@ -23,14 +23,23 @@ router.get("/callback", async (req: Request, res: Response) => {
       id: discordUser.id,
     };
     const options = {
-      expiresIn: '6h'
+      expiresIn: "6h",
     };
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET, options);
-    console.log(accessToken);
-    res.status(200).send(discordUser);
+    req.session.accessToken = accessToken;
+    res.redirect("/");
   } catch (err) {
     res.status(500).json(err);
   }
+});
+
+router.get("/logout", (req: Request, res: Response) => {
+  req.session.destroy((err: Error) => {
+    if (err != null) {
+      delete req.session.accessToken;
+    }
+    res.redirect("/");
+  });
 });
 
 export default router;
