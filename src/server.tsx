@@ -12,6 +12,7 @@ config();
 
 import App from "./App";
 import AuthenticationRouter from "./routes/v1/authentication";
+import { seed } from "./controllers/database";
 
 const app: Express = express();
 app.use(bodyParser.json());
@@ -47,4 +48,5 @@ app.get("*", (req: Request, res: Response) => {
   });
 });
 
-app.listen(PORT);
+seed()
+  .then(() => app.listen(PORT));
