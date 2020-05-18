@@ -50,7 +50,7 @@ app.get("*", async (req: Request, res: Response) => {
     <App me={me} />
   );
 
-  const indexFile = path.resolve("./build/index.html");
+  const indexFile = path.resolve("./dist/index.html");
   fs.readFile(indexFile, "utf8", (err, data) => {
     if (err) {
       res.status(500);

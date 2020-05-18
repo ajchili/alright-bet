@@ -18,6 +18,12 @@
     }
   },
   "include": [
-    "src/**/*", "web"
+    "src"
+  ],
+  "exclude": [
+    "src/App.tsx",
+    "src/index.tsx",
+    "src/components",
+    "src/pages"
   ]
 }

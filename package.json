@@ -8,9 +8,11 @@
   "scripts": {
     "clear": "rm -rf ./dist",
     "lint": "tslint -c tslint.json -p tsconfig.server.json --fix",
-    "build": "yarn clear && tsc --project tsconfig.server.json && yarn build:web",
-    "build:web": "react-scripts build ",
-    "dev": "nodemon --watch src -e ts,tsx --exec yarn dev:start",
+    "prebuild": "yarn clear",
+    "build": "yarn build:server && yarn build:web",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build:web": "yarn webpack --progress",
+    "dev": "nodemon --watch src -e ts,tsx --exec yarn dev:start --ignore '/src/components' --ignore '/src/pages'",
     "dev:start": "ts-node --project tsconfig.server.json .",
     "start": "node ./dist/server.js"
   },
@@ -31,6 +33,12 @@
     "semantic-ui-react": "^0.88.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",
     "@types/express-session": "^1.17.0",
@@ -40,11 +48,18 @@
     "@types/pg": "^7.14.3",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
+    "babel-loader": "^8.1.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
     "nodemon": "^2.0.3",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^7.0.4",
     "ts-node": "^8.10.1",
     "tsc": "^1.20150623.0",
     "tslint": "^6.1.2",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "engines": {
     "node": "13.11.0"
