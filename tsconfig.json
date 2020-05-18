@@ -17,7 +17,6 @@
     "isolatedModules": true,
     "sourceMap": true,
     "noImplicitAny": true,
-    "module": "commonjs",
     "jsx": "react"
   },
   "include": [

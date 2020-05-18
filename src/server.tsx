@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import path from "path";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
+import { StaticRouter } from "react-router-dom";
 import session from "express-session";
 import { config } from "dotenv";
 // Configure environment variables
@@ -15,6 +16,7 @@ import App from "./App";
 import AuthenticationRouter from "./routes/v1/authentication";
 import { seed } from "./controllers/database";
 import { getMe } from "./api/v1/discord";
+import { User } from "./lib/v1/discord";
 
 const app: Express = express();
 app.use(bodyParser.json());
@@ -26,13 +28,14 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(express.static("build", { index: false }));
 const PORT: string = process.env.PORT || "80";
 
 app.use("/api/v1/authentication", AuthenticationRouter);
 
 app.get("*", async (req: Request, res: Response) => {
   const token = req.session.accessToken;
-  let me = null;
+  let me: User;
   if (token !== undefined && token.length > 0) {
     const decodedAccessToken = jwt.decode(token, { json: true });
     const { accessToken, exp: tokenExpiresAt = 0 } = decodedAccessToken;
@@ -44,13 +47,16 @@ app.get("*", async (req: Request, res: Response) => {
       }
     } catch (err) {
       // TODO: Handle error
+      console.error(err);
     }
   }
   const reactApp = ReactDOMServer.renderToString(
-    <App me={me} />
+    <StaticRouter>
+      <App me={me} />
+    </StaticRouter>
   );
 
-  const indexFile = path.resolve("./dist/index.html");
+  const indexFile = path.resolve("./build/index.html");
   fs.readFile(indexFile, "utf8", (err, data) => {
     if (err) {
       res.status(500);
@@ -59,9 +65,12 @@ app.get("*", async (req: Request, res: Response) => {
     }
 
     res.status(200);
-    res.send(
-      data.replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`)
-    );
+    const html = data
+      .replace("<script id=\"data\"></script>", `<script>
+        window.__INITIAL__DATA__ = ${JSON.stringify({ me: me })};
+      </script>`)
+      .replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`);
+    res.send(html);
   });
 });
 

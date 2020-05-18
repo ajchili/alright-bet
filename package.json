@@ -5,15 +5,17 @@
   "repository": "https://github.com/ajchili/alright-bet",
   "author": "Kirin Patel <kirinpatel@gmail.com>",
   "license": "MIT",
+  "proxy": "localhost:80",
   "scripts": {
-    "clear": "rm -rf ./dist",
+    "clear": "rm -rf ./dist ./bundle",
     "lint": "tslint -c tslint.json -p tsconfig.server.json --fix",
     "prebuild": "yarn clear",
     "build": "yarn build:server && yarn build:web",
     "build:server": "tsc --project tsconfig.server.json",
     "build:web": "yarn webpack --progress",
-    "dev": "nodemon --watch src -e ts,tsx --exec yarn dev:start --ignore '/src/components' --ignore '/src/pages'",
-    "dev:start": "ts-node --project tsconfig.server.json .",
+    "dev:server": "nodemon --ignore src/App.tsx --ignore src/index.tsx --ignore src/components --ignore src/pages  --watch src -e ts,tsx --exec yarn dev:server:start",
+    "dev:server:start": "ts-node --project tsconfig.server.json .",
+    "dev:web": "yarn webpack --watch --progress",
     "start": "node ./dist/server.js"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "pg": "^8.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "semantic-ui-react": "^0.88.2"
