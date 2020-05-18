@@ -3,7 +3,9 @@ import { Route, Switch } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 import { User } from "./lib/v1/discord";
 import Navbar from "./components/Navbar";
+import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";
+import JoinGroup from "./pages/JoinGroup";
 import Lander from "./pages/Lander";
 
 interface Props {
@@ -27,8 +29,10 @@ export default class extends Component<Props> {
         <Grid.Row>
           <Grid.Column stretched>
             <Switch>
-              {!authenticated && <Route path="/" exact component={Lander} />}
+              {!authenticated && <Route path="/" component={Lander} />}
               {authenticated && <Route path="/" exact component={Home} />}
+              {authenticated && <Route path="/groups/create" exact component={CreateGroup} />}
+              {authenticated && <Route path="/groups/join" exact component={JoinGroup} />}
             </Switch>
           </Grid.Column>
         </Grid.Row>
