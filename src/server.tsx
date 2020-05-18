@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import express, { Express, Request, Response } from "express";
 import fs from "fs";
+import jwt from "jsonwebtoken";
 import path from "path";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
@@ -13,6 +14,7 @@ config();
 import App from "./App";
 import AuthenticationRouter from "./routes/v1/authentication";
 import { seed } from "./controllers/database";
+import { getMe } from "./api/v1/discord";
 
 const app: Express = express();
 app.use(bodyParser.json());
@@ -28,9 +30,24 @@ const PORT: string = process.env.PORT || "80";
 
 app.use("/api/v1/authentication", AuthenticationRouter);
 
-app.get("*", (req: Request, res: Response) => {
+app.get("*", async (req: Request, res: Response) => {
+  const token = req.session.accessToken;
+  let me = null;
+  if (token !== undefined && token.length > 0) {
+    const decodedAccessToken = jwt.decode(token, { json: true });
+    const { accessToken, exp: tokenExpiresAt = 0 } = decodedAccessToken;
+    const now = new Date().getTime() / 1000;
+    const tokenExpired = now > tokenExpiresAt;
+    try {
+      if (!tokenExpired) {
+        me = await getMe(accessToken);
+      }
+    } catch (err) {
+      // TODO: Handle error
+    }
+  }
   const reactApp = ReactDOMServer.renderToString(
-    <App token={req.session.accessToken} />
+    <App me={me} />
   );
 
   const indexFile = path.resolve("./build/index.html");
