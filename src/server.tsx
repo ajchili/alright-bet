@@ -67,7 +67,7 @@ app.get("*", async (req: Request, res: Response) => {
     res.status(200);
     const html = data
       .replace("<script id=\"data\"></script>", `<script>
-        window.__INITIAL__DATA__ = ${JSON.stringify({ me: me })};
+        window.__INITIAL__DATA__ = ${JSON.stringify({ me })};
       </script>`)
       .replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`);
     res.send(html);
