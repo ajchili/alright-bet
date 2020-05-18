@@ -13,7 +13,7 @@
     "build": "yarn build:server && yarn build:web",
     "build:server": "tsc --project tsconfig.server.json",
     "build:web": "yarn webpack --progress",
-    "dev:server": "nodemon --ignore src/App.tsx --ignore src/index.tsx --ignore src/components --ignore src/pages  --watch src -e ts,tsx --exec yarn dev:server:start",
+    "dev:server": "nodemon --ignore src/index.tsx --ignore src/components --ignore src/pages  --watch src -e ts,tsx --exec yarn dev:server:start",
     "dev:server:start": "ts-node --project tsconfig.server.json .",
     "dev:web": "yarn webpack --watch --progress",
     "start": "node ./dist/server.js"
