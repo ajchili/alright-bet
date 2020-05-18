@@ -51,7 +51,7 @@ app.get("*", async (req: Request, res: Response) => {
     }
   }
   const reactApp = ReactDOMServer.renderToString(
-    <StaticRouter>
+    <StaticRouter location={req.url}>
       <App me={me} />
     </StaticRouter>
   );
