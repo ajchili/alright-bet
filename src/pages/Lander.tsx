@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Button, Icon, Grid } from "semantic-ui-react";
 
 export default class extends Component {
@@ -12,14 +11,14 @@ export default class extends Component {
           <Grid.Column textAlign="center" verticalAlign="middle">
             <h1>alright bet</h1>
             <p>An easy way to competitively track and compare performance between friends with fake money.</p>
-            <Link to="/api/v1/authentication/authenticate">
+            <a href="/api/v1/authentication/authenticate">
               <Button animated>
                 <Button.Content visible>Login With Discord</Button.Content>
                 <Button.Content hidden>
                   <Icon name="arrow right" />
                 </Button.Content>
               </Button>
-            </Link>
+            </a>
           </Grid.Column>
           <Grid.Column />
         </Grid.Row>

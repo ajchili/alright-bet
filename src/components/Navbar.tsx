@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { Image, Menu } from "semantic-ui-react";
 import { User } from "../lib/v1/discord";
 
@@ -23,9 +23,9 @@ export default class extends Component<Props> {
           }
           <Menu.Menu position='right'>
             <Menu.Item>
-              <Link to="/api/v1/authentication/logout">
+              <a href="/api/v1/authentication/logout">
                 Logout
-              </Link>
+              </a>
             </Menu.Item>
           </Menu.Menu>
         </Menu>
