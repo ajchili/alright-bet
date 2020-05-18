@@ -4,7 +4,7 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 
 // @ts-ignore
-const { __INITIAL__DATA__: data = {} } = windowData;
+const { __INITIAL__DATA__: data = {} } = window;
 
 ReactDOM.hydrate(
   <React.StrictMode>
