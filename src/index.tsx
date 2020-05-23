@@ -9,7 +9,10 @@ const { __INITIAL__DATA__: data = {} } = window;
 ReactDOM.hydrate(
   <React.StrictMode>
     <BrowserRouter>
-      <App me={data.me} />
+      <App
+        groups={data.groups}
+        me={data.me}
+      />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

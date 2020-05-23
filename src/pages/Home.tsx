@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { Grid, Icon, Input, Menu } from "semantic-ui-react";
+import { Group } from "../lib/v1";
 
-export default class extends Component {
+interface Props {
+  groups: Group[];
+}
+export default class extends Component<Props> {
   render(): JSX.Element {
+    const { groups } = this.props;
+
     return (
       <Grid stretched padded="horizontally">
         <Grid.Row>
@@ -26,6 +32,11 @@ export default class extends Component {
                   <Menu.Item>
                     <Input placeholder="Search..." />
                   </Menu.Item>
+                  {groups.map((group: Group) =>
+                    <Menu.Item key={group.id} name={group.name}>
+                      {group.name}
+                    </Menu.Item>
+                  )}
                 </Menu.Menu>
               </Menu.Item>
             </Menu>

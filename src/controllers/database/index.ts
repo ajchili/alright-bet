@@ -1,11 +1,16 @@
 import { Table } from "../../lib/v1";
 import * as Groups from "./groups";
+import * as Members from "./members";
 import * as Roles from "./roles";
 import * as Users from "./users";
 import { createTable } from "./utils";
 
 export const groups = {
   ...Groups,
+};
+
+export const members = {
+  ...Members,
 };
 
 export const users = {

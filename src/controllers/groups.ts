@@ -1,5 +1,5 @@
-import { User } from "../lib/v1";
-import { groups } from "./database";
+import { Group, User, Member } from "../lib/v1";
+import { groups , members } from "./database";
 
 export const createGroup = async (user: User, groupName: string) => {
   await groups.create(user, groupName);
@@ -7,7 +7,9 @@ export const createGroup = async (user: User, groupName: string) => {
 
 export const getGroup = async () => {};
 
-export const getMyGroups = async () => {};
+export const getGroupsForUser = async (user: User): Promise<Group[]> => {
+  return await groups.getForUser(user);
+};
 
 export const joinGroup = async () => {};
 

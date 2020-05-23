@@ -14,11 +14,14 @@ config();
 
 import App from "./App";
 import AuthenticationRouter from "./routes/v1/authentication";
+import GroupsRouter from "./routes/v1/groups";
 import { seed } from "./controllers/database";
+import * as Groups from "./controllers/groups";
 import { getMe } from "./api/v1/discord";
-import { User } from "./lib/v1";
+import { Group, User } from "./lib/v1";
 
 const app: Express = express();
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
@@ -54,12 +57,25 @@ app.use(async (req: Request, _: Response, next: NextFunction) => {
 });
 
 app.use("/api/v1/authentication", AuthenticationRouter);
+app.use("/api/v1/groups", GroupsRouter);
 
 app.get("*", async (req: Request, res: Response) => {
   const { user } = req.cookies;
+  let groups: Group[] = [];
+  switch (req.url) {
+    case "/":
+      if (user != null) {
+        groups = await Groups.getGroupsForUser(user);
+      }
+      break;
+  }
+
   const reactApp = ReactDOMServer.renderToString(
     <StaticRouter location={req.url}>
-      <App me={user} />
+      <App
+        groups={groups}
+        me={user}
+      />
     </StaticRouter>
   );
 
@@ -74,8 +90,12 @@ app.get("*", async (req: Request, res: Response) => {
     res.status(200);
     const html = data
       .replace("<script id=\"data\"></script>", `<script>
-        window.__INITIAL__DATA__ = ${JSON.stringify({ me: user })};
+        window.__INITIAL__DATA__ = ${JSON.stringify({
+        groups,
+        me: user
+      })};
       </script>`)
+      .replace("<script src=\"main.js\"></script>", "<script src=\"/main.js\"></script>")
       .replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`);
     res.send(html);
   });

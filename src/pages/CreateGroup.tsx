@@ -1,8 +1,47 @@
 import React, { Component } from "react";
 import { Button, Grid, Header, Input } from "semantic-ui-react";
 
-export default class extends Component {
+interface State {
+  creatingGroup: boolean;
+  name: string;
+}
+
+export default class extends Component<any, State> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      creatingGroup: false,
+      name: ""
+    };
+  }
+
+  _createGroup = () => {
+    const { name } = this.state;
+    this.setState({ creatingGroup: true });
+    fetch("/api/v1/groups/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name })
+    })
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch(console.error)
+      .finally(() => {
+        this.setState({ creatingGroup: false });
+      });
+  };
+
+  _canCreateGroup = (): boolean => {
+    const { name } = this.state;
+    return name.length >= 3 && name.length <= 100;
+  }
+
   render(): JSX.Element {
+    const { creatingGroup, name } = this.state;
+
     return (
       <Grid>
         <Grid.Row divided={false} />
@@ -21,12 +60,25 @@ export default class extends Component {
                   textAlign="center"
                   verticalAlign="middle"
                 >
-                  <Input placeholder="Group Name" />
+                  <Input
+                    placeholder="Group Name"
+                    value={name}
+                    disabled={creatingGroup}
+                    onChange={(event) => {
+                      this.setState({ name: event.target.value });
+                    }}
+                  />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column textAlign="center" verticalAlign="middle">
-                  <Button>Create</Button>
+                  <Button
+                    disabled={!this._canCreateGroup()}
+                    loading={creatingGroup}
+                    onClick={this._createGroup}
+                  >
+                    Create
+                  </Button>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
