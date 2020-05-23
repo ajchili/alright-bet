@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Header, Segment } from "semantic-ui-react";
+import { Button, Header, Message, Segment, Table } from "semantic-ui-react";
 import { Group, GroupMember, User } from "../lib/v1";
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
 }
 
 interface State {
+  activeBets: any[];
   loading: boolean;
   owner?: User;
   members: GroupMember[];
@@ -17,6 +18,7 @@ export default class extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      activeBets: [],
       loading: true,
       members: []
     };
@@ -102,11 +104,11 @@ export default class extends Component<Props, State> {
 
   render(): JSX.Element {
     const { group, me } = this.props;
-    const { loading, owner } = this.state;
+    const { activeBets, loading, owner } = this.state;
 
     return (
       <Segment loading={loading}>
-        <Header>
+        <Header as="h1">
           {group.name}
         </Header>
         <Button.Group>
@@ -129,6 +131,28 @@ export default class extends Component<Props, State> {
             </Button>
           }
         </Button.Group>
+        <Header>Active Bets</Header>
+        {activeBets.length > 0 &&
+          <Table basic="very" celled>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Creator</Table.HeaderCell>
+                <Table.HeaderCell>Betters</Table.HeaderCell>
+                <Table.HeaderCell># of Wagers</Table.HeaderCell>
+                <Table.HeaderCell></Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+          </Table>
+        }
+        {activeBets.length === 0 &&
+          <Message>
+            <Message.Header>There are currently no active bets</Message.Header>
+            <p>
+              You can start betting by clicking the "Make a bet" button below.
+            </p>
+          </Message>
+        }
+        <Button color="green">Make a bet</Button>
       </Segment>
     );
   }
