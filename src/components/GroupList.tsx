@@ -52,12 +52,6 @@ export default class extends Component<Props, State> {
                 Create
               </Menu.Item>
             </Link>
-            <Link to="/groups/join">
-              <Menu.Item name="join">
-                <Icon name="sign in" />
-                Join
-              </Menu.Item>
-            </Link>
           </Menu.Menu>
           <Menu.Menu>
             <Menu.Item>
