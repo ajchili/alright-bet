@@ -26,6 +26,26 @@ export const create = async (
   });
 };
 
+export const find = async (id: number): Promise<Bet> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT * FROM bets WHERE id = $1",
+      [id],
+      (err: Error, result: QueryResult) => {
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          reject(new Error("Bet does not exist!"));
+        } else {
+          const bet = result.rows[0] as Bet;
+          resolve(bet);
+        }
+      }
+    );
+  });
+};
+
 export const getActiveForGroup = async (
   groupID: number
 ): Promise<ActiveBet[]> => {
@@ -39,7 +59,7 @@ export const getActiveForGroup = async (
         if (err) {
           reject(err);
         } else {
-          const activeBets: ActiveBet[] = result.rows.map(row => {
+          const activeBets: ActiveBet[] = result.rows.map((row) => {
             return {
               id: row.id,
               name: row.name,
@@ -48,10 +68,10 @@ export const getActiveForGroup = async (
                 id: row.creator,
                 username: row.username,
                 discriminator: row.discriminator,
-                avatar: row.avatar
+                avatar: row.avatar,
               },
               betters: [],
-              wagers: 0
+              wagers: 0,
             };
           });
           resolve(activeBets);

@@ -63,9 +63,18 @@ export default class extends Component<Props> {
                   })}
                 />
               }
-              <Route path="/bets/:id" exact>
-                <Bet me={me} />
-              </Route>
+              <Route
+                path="/bets/:id"
+                exact
+                render={(props) => {
+                  const { id = "null" } = props.match.params;
+                  const bet: number = parseInt(id, 10);
+                  if (isNaN(bet)) {
+                    return <Redirect to="/" />;
+                  }
+                  return <Bet me={me} bet={bet} />;
+                }}
+              />
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
               <Route path="/">
