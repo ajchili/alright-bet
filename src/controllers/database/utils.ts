@@ -3,7 +3,7 @@ import { Table, TableRow } from "../../lib/v1";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 10,
+  max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
   ssl: {
@@ -37,7 +37,7 @@ export const createTable = (table: Table): Promise<QueryResult> => {
         ${table.rows.map(getTableRowAsQueryString).join(",\n")}
       )`,
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         }

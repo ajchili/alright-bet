@@ -32,7 +32,8 @@ router.get("*", async (req: Request, res: Response) => {
         }
         break;
     }
-  } catch {
+  } catch (err) {
+    console.error(err);
     // Ignore error
   }
 

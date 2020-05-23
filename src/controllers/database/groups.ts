@@ -11,7 +11,7 @@ export const create = async (user: User, name: string): Promise<Group> => {
       "INSERT INTO groups(name) VALUES($1) RETURNING *",
       [name],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -35,7 +35,7 @@ export const destroy = async (id: number): Promise<QueryResult> => {
       "DELETE FROM groups WHERE id = $1",
       [id],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -53,7 +53,7 @@ export const find = async (id: number): Promise<Group> => {
       "SELECT * FROM groups WHERE id = $1",
       [id],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -82,7 +82,7 @@ export const getOwner = async (id: number): Promise<User> => {
       "SELECT users.id, users.username, users.discriminator, users.avatar FROM users JOIN members ON users.id = members.user_id JOIN roles ON members.role_id = roles.id WHERE members.group_id = $1 AND roles.name = $2",
       [id, constants.ROLE_NAMES[0]],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -101,7 +101,7 @@ export const getForUser = async (user: User): Promise<Group[]> => {
       "SELECT groups.id, groups.name FROM groups LEFT JOIN members ON groups.id = members.group_id WHERE members.user_id = $1",
       [user.id],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {

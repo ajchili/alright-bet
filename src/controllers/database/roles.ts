@@ -9,7 +9,7 @@ const create = async (name: string): Promise<QueryResult> => {
       "INSERT INTO roles(name) VALUES($1) RETURNING *",
       [name],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -27,7 +27,7 @@ export const get = async (id: number): Promise<Role> => {
       "SELECT * FROM roles WHERE id = $1",
       [id],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -46,7 +46,7 @@ export const getId = async (name: string): Promise<number> => {
       "SELECT * FROM roles where name = $1",
       [name],
       (err: Error, result: QueryResult) => {
-        client.release();
+        client.release(true);
         if (err) {
           reject(err);
         } else {
@@ -62,7 +62,7 @@ export const getAll = async (): Promise<Role[]> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query("SELECT * FROM roles", (err: Error, result: QueryResult) => {
-      client.release();
+      client.release(true);
       if (err) {
         reject(err);
       } else {
