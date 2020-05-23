@@ -15,6 +15,10 @@ export const destroy = async (id: number) => {
   ]);
 };
 
+export const find = async (id: number) => {
+  return await groups.find(id);
+};
+
 export const getForUser = async (user: User): Promise<Group[]> => {
   return await groups.getForUser(user);
 };

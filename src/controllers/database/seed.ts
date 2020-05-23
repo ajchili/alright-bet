@@ -119,6 +119,11 @@ export default async (): Promise<void> => {
         optional: true,
       },
       {
+        name: "group_id",
+        type: "INTEGER",
+        references: "groups(id)",
+      },
+      {
         name: "name",
         type: "VARCHAR (100)",
       },

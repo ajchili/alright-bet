@@ -7,9 +7,10 @@ export interface Bet {
   id: number;
   creator_id: string;
   winner_id?: string;
+  group_id: number;
   name: string;
-  description: string;
-  proof: string;
+  description?: string;
+  proof?: string;
 }
 
 export interface DiscordUser {
