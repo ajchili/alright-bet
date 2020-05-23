@@ -32,9 +32,18 @@ export default class extends Component<Props> {
             <Switch>
               {!authenticated && <Route path="/" exact component={Lander} />}
               {authenticated &&
-                <Route path="/" exact>
-                  <Home groups={groups} />
-                </Route>
+                <Route
+                  path="/"
+                  exact
+                  render={(props) => {
+                    const params = new URLSearchParams(props.location.search);
+                    const group: number = parseInt(params.get("group") || "null", 10);
+                    return <Home
+                      groups={groups}
+                      selectedGroup={group || null}
+                    />;
+                  }}
+                />
               }
               {authenticated && <Route path="/groups/create" exact component={CreateGroup} />}
               {authenticated && <Route path="/groups/join" exact component={JoinGroup} />}
