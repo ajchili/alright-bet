@@ -22,4 +22,15 @@ router.post("/create", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/:id/members", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const groupId = parseInt(id, 10);
+    const groupMembers = await Groups.getMembers(groupId);
+    res.status(200).json(groupMembers);
+  } catch (err) {
+    res.status(500).send();
+  }
+});
+
 export default router;

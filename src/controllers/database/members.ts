@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { constants, Member, User } from "../../lib/v1";
+import { constants, GroupMember, Member, User } from "../../lib/v1";
 import { getClient } from "./utils";
 
 export const create = async (
@@ -19,6 +19,26 @@ export const create = async (
         } else {
           const member = result.rows[0] as Member;
           resolve(member);
+        }
+      }
+    );
+  });
+};
+
+
+export const getForGroup = async (id: number): Promise<GroupMember[]> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT members.id, members.user_id, members.role_id, members.currency, users.username, users.discriminator, users.avatar FROM members LEFT JOIN users ON members.user_id = users.id WHERE members.group_id = $1",
+      [id],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          const users = result.rows as GroupMember[];
+          resolve(users);
         }
       }
     );

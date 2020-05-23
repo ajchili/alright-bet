@@ -15,12 +15,22 @@ export interface Group {
   name: string;
 }
 
+export interface GroupMember {
+  id: number;
+  user_id: string;
+  role_id: number;
+  currency: string;
+  username: string;
+  discriminator: string;
+  avatar?: string;
+}
+
 export interface Member {
   id: number;
   user_id: string;
   group_id: number;
   role_id: number;
-  currency: number;
+  currency: string;
 }
 
 export interface Role {
