@@ -51,7 +51,7 @@ export const getForUser = (user: User): Promise<Group[]> => {
   return new Promise(async (resolve, reject) => {
     const client = await getClient();
     client.query(
-      "SELECT * FROM groups LEFT JOIN members ON groups.id = members.group_id WHERE members.user_id = $1",
+      "SELECT groups.id, groups.name FROM groups LEFT JOIN members ON groups.id = members.group_id WHERE members.user_id = $1",
       [user.id],
       (err: Error, result: QueryResult) => {
         client.end();
