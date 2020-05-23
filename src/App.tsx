@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 import { User, Group } from "./lib/v1";
 import Navbar from "./components/Navbar";
@@ -30,7 +30,7 @@ export default class extends Component<Props> {
         <Grid.Row>
           <Grid.Column stretched>
             <Switch>
-              {!authenticated && <Route path="/" component={Lander} />}
+              {!authenticated && <Route path="/" exact component={Lander} />}
               {authenticated &&
                 <Route path="/" exact>
                   <Home groups={groups} />
@@ -38,6 +38,9 @@ export default class extends Component<Props> {
               }
               {authenticated && <Route path="/groups/create" exact component={CreateGroup} />}
               {authenticated && <Route path="/groups/join" exact component={JoinGroup} />}
+              <Route path="/">
+                <Redirect to="/" />
+              </Route>
             </Switch>
           </Grid.Column>
         </Grid.Row>
