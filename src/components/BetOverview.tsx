@@ -111,7 +111,7 @@ export default class extends Component<Props, State> {
             <Message.Header>There are currently no active wagers</Message.Header>
           </Message>
         }
-        {bet && <MakeWager me={me} groupId={bet.group_id} />}
+        {bet && <MakeWager bet={bet} me={me} groupId={bet.group_id} />}
       </Segment>
     );
   }

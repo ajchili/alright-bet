@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Button, Input, Grid, Message } from "semantic-ui-react";
-import { Member, User } from "../lib/v1";
+import { Bet, Member, User } from "../lib/v1";
 
 interface Props {
+  bet: Bet;
   me: User | null;
   groupId: number;
 }
@@ -44,10 +45,7 @@ export default class extends Component<Props, State> {
     const { membership } = this.state;
     let marbles = 0;
     if (membership) {
-      marbles = parseFloat(membership.currency.substring(1));
-      if (isNaN(marbles)) {
-        marbles = 0;
-      }
+      marbles = membership.currency;
     }
     return marbles;
   }
@@ -65,8 +63,22 @@ export default class extends Component<Props, State> {
   };
 
   _submitWager = () => {
-    const { wager } = this.state;
+    const { bet } = this.props;
+    const { wager: amount } = this.state;
     this.setState({ loading: true });
+    fetch(`/api/v1/bets/${bet.id}/wagers/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ amount })
+    })
+      .then(response => response.json())
+      .then(json => {
+        const { redirect = "/" } = json;
+        window.location.href = redirect;
+      })
+      .catch(console.error);
   }
 
   _renderWager = (): JSX.Element => {

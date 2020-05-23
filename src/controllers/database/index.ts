@@ -3,6 +3,7 @@ import * as Groups from "./groups";
 import * as Members from "./members";
 import * as Roles from "./roles";
 import * as Users from "./users";
+import * as Wagers from "./wagers";
 import seedDatabase from "./seed";
 
 export const bets = {
@@ -19,6 +20,10 @@ export const members = {
 
 export const users = {
   ...Users,
+};
+
+export const wagers = {
+  ...Wagers
 };
 
 export const seed = async (): Promise<void> => {

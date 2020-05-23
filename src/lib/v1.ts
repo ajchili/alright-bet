@@ -49,7 +49,7 @@ export interface Member {
   user_id: string;
   group_id: number;
   role_id: number;
-  currency: string;
+  currency: number;
 }
 
 export interface Role {
@@ -80,8 +80,8 @@ export interface Wager {
   id: number;
   bet_id: number;
   user_id: string;
-  amount: string;
-  time_placed: number;
+  amount: number;
+  time_placed: Date;
 }
 
 export interface User extends DiscordUser {}

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
-import * as Members from "../../controllers/member";
+import * as Members from "../../controllers/members";
 
 const router = Router();
 

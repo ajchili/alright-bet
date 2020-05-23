@@ -94,7 +94,7 @@ export default async (): Promise<void> => {
       },
       {
         name: "currency",
-        type: "MONEY",
+        type: "INTEGER",
       },
     ],
   });
@@ -160,11 +160,11 @@ export default async (): Promise<void> => {
       },
       {
         name: "amount",
-        type: "MONEY",
+        type: "INTEGER",
       },
       {
         name: "time_placed",
-        type: "INTEGER",
+        type: "timestamp",
       },
     ],
   });
