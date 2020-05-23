@@ -25,6 +25,25 @@ export const create = async (
   });
 };
 
+export const propagateGroupDestroy = async (
+  groupID: number
+): Promise<QueryResult> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "DELETE FROM members WHERE group_id = $1",
+      [groupID],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
 
 export const getForGroup = async (id: number): Promise<GroupMember[]> => {
   const client = await getClient();

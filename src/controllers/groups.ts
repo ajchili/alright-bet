@@ -8,22 +8,21 @@ export const createGroup = async (
   return await groups.create(user, groupName);
 };
 
-export const getGroup = async () => {};
+export const destroy = async (id: number) => {
+  return await Promise.all([
+    groups.destroy(id),
+    members.propagateGroupDestroy(id),
+  ]);
+};
 
 export const getGroupsForUser = async (user: User): Promise<Group[]> => {
   return await groups.getForUser(user);
 };
 
-export const getMembers = async (
-  id: number
-): Promise<GroupMember[]> => {
+export const getMembers = async (id: number): Promise<GroupMember[]> => {
   return await members.getForGroup(id);
 };
 
-export const joinGroup = async () => {};
-
-export const leaveGroup = async () => {};
-
-export const updateGroup = async () => {};
-
-export const deleteGroup = async () => {};
+export const getOwner = async (id: number): Promise<User> => {
+  return await groups.getOwner(id);
+};

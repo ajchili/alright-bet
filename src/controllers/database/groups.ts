@@ -4,9 +4,9 @@ import { create as createMember } from "./members";
 import { getId as getRoleId } from "./roles";
 import { getClient } from "./utils";
 
-export const create = (user: User, name: string): Promise<Group> => {
-  return new Promise(async (resolve, reject) => {
-    const client = await getClient();
+export const create = async (user: User, name: string): Promise<Group> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
     client.query(
       "INSERT INTO groups(name) VALUES($1) RETURNING *",
       [name],
@@ -28,9 +28,27 @@ export const create = (user: User, name: string): Promise<Group> => {
   });
 };
 
-export const find = (id: number): Promise<Group> => {
-  return new Promise(async (resolve, reject) => {
-    const client = await getClient();
+export const destroy = async (id: number): Promise<QueryResult> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "DELETE FROM groups WHERE id = $1",
+      [id],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
+export const find = async (id: number): Promise<Group> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
     client.query(
       "SELECT * FROM groups WHERE id = $1",
       [id],
@@ -47,9 +65,28 @@ export const find = (id: number): Promise<Group> => {
   });
 };
 
-export const getForUser = (user: User): Promise<Group[]> => {
-  return new Promise(async (resolve, reject) => {
-    const client = await getClient();
+export const getOwner = async (id: number): Promise<User> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT users.id, users.username, users.discriminator, users.avatar FROM users JOIN members ON users.id = members.user_id JOIN roles ON members.role_id = roles.id WHERE members.group_id = $1 AND roles.name = $2",
+      [id, constants.ROLE_NAMES[0]],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          const user = result.rows[0] as User;
+          resolve(user);
+        }
+      }
+    );
+  });
+};
+
+export const getForUser = async (user: User): Promise<Group[]> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
     client.query(
       "SELECT groups.id, groups.name FROM groups LEFT JOIN members ON groups.id = members.group_id WHERE members.user_id = $1",
       [user.id],
