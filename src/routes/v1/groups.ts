@@ -15,8 +15,8 @@ router.post("/create", async (req: Request, res: Response) => {
     return;
   }
   try {
-    await Groups.createGroup(user, name);
-    res.status(200).send();
+    const group = await Groups.createGroup(user, name);
+    res.status(200).send({ redirect: `/?group=${group.id}` });
   } catch (err) {
     res.status(500).send();
   }

@@ -25,8 +25,10 @@ export default class extends Component<any, State> {
       },
       body: JSON.stringify({ name })
     })
-      .then(() => {
-        window.location.href = "/";
+      .then(response => response.json())
+      .then(json => {
+        const { redirect = "/" } = json;
+        window.location.href = redirect;
       })
       .catch(console.error)
       .finally(() => {
