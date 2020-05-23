@@ -1,4 +1,4 @@
-import { Group, GroupMember, Member, User } from "../lib/v1";
+import { Group, GroupMember, User } from "../lib/v1";
 import { groups, members } from "./database";
 
 export const create = async (

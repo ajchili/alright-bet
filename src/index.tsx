@@ -10,6 +10,7 @@ ReactDOM.hydrate(
   <React.StrictMode>
     <BrowserRouter>
       <App
+        bet={data.bet}
         groups={data.groups}
         me={data.me}
       />

@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
-import { User, Group } from "./lib/v1";
+import { Bet, User, Group } from "./lib/v1";
 import Navbar from "./components/Navbar";
-import Bet from "./pages/Bet";
+import BetPage from "./pages/Bet";
 import CreateBet from "./pages/CreateBet";
 import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";
 import Lander from "./pages/Lander";
 
 interface Props {
+  bet?: Bet;
   groups?: Group[];
   me?: User;
 }
 
 export default class extends Component<Props> {
   render(): JSX.Element | null {
-    const { groups = [], me = null } = this.props;
+    const { bet, groups = [], me = null } = this.props;
 
     return (
       <Grid stretched>
@@ -67,12 +68,15 @@ export default class extends Component<Props> {
                 path="/bets/:id"
                 exact
                 render={(props) => {
+                  if (bet) {
+                    return <BetPage me={me} bet={bet} />;
+                  }
                   const { id = "null" } = props.match.params;
-                  const bet: number = parseInt(id, 10);
-                  if (isNaN(bet)) {
+                  const betId: number = parseInt(id, 10);
+                  if (isNaN(betId)) {
                     return <Redirect to="/" />;
                   }
-                  return <Bet me={me} bet={bet} />;
+                  return <BetPage me={me} bet={betId} />;
                 }}
               />
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}

@@ -4,8 +4,9 @@ import path from "path";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
+import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
-import { Group } from "../../lib/v1";
+import { Bet, Group } from "../../lib/v1";
 import App from "../../App";
 
 const router = Router();
@@ -13,17 +14,32 @@ const router = Router();
 router.get("*", async (req: Request, res: Response) => {
   const { user } = req.cookies;
   let groups: Group[] = [];
-  switch (req.path) {
-    case "/":
-      if (user != null) {
-        groups = await Groups.getForUser(user);
-      }
-      break;
+  let bet: Bet;
+  try {
+    switch (req.path) {
+      case "/":
+        if (user != null) {
+          groups = await Groups.getForUser(user);
+        }
+        break;
+      default:
+        if (req.path.startsWith("/bets/")) {
+          const id = req.path.substr(req.path.lastIndexOf("/") + 1);
+          const betId = parseInt(id, 10);
+          if (!isNaN(betId)) {
+            bet = await Bets.find(betId);
+          }
+        }
+        break;
+    }
+  } catch {
+    // Ignore error
   }
 
   const reactApp = ReactDOMServer.renderToString(
     <StaticRouter location={req.url}>
       <App
+        bet={bet}
         groups={groups}
         me={user}
       />
@@ -42,6 +58,7 @@ router.get("*", async (req: Request, res: Response) => {
     const html = data
       .replace("<script id=\"data\"></script>", `<script>
         window.__INITIAL__DATA__ = ${JSON.stringify({
+        bet,
         groups,
         me: user
       })};

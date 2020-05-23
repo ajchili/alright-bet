@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
+import * as Members from "../../controllers/member";
 
 const router = Router();
 
@@ -127,6 +128,31 @@ router.get("/:id/owner", async (req: Request, res: Response) => {
     res.status(200).json(groupMembers);
   } catch (err) {
     res.status(500).send();
+  }
+});
+
+router.get("/:id/membershipStatus", async (req: Request, res: Response) => {
+  const { user } = req.cookies;
+  if (!user) {
+    res.status(401).redirect("/");
+    return;
+  }
+  const { id } = req.params;
+  try {
+    const groupId = parseInt(id, 10);
+    const group = await Groups.find(groupId);
+    const membership = await Members.find(user, group);
+    res.status(200).json(membership);
+  } catch (err) {
+    switch (err.message) {
+      case "Group does not exist!":
+      case "Member does not exist!":
+        res.status(404).send();
+        break;
+      default:
+        res.status(500).send();
+        break;
+    }
   }
 });
 

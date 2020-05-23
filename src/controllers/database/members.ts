@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { constants, GroupMember, Member, User } from "../../lib/v1";
+import { constants, Group, GroupMember, Member, User } from "../../lib/v1";
 import { getClient } from "./utils";
 
 export const create = async (
@@ -16,6 +16,26 @@ export const create = async (
         client.end();
         if (err) {
           reject(err);
+        } else {
+          const member = result.rows[0] as Member;
+          resolve(member);
+        }
+      }
+    );
+  });
+};
+
+export const find = async (user: User, group: Group): Promise<Member> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT * FROM members WHERE user_id = $1 AND group_id = $2",
+      [user.id, group.id],
+      (err: Error, result: QueryResult) => {
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          reject("Member does not exist!");
         } else {
           const member = result.rows[0] as Member;
           resolve(member);

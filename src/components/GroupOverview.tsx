@@ -29,6 +29,7 @@ export default class extends Component<Props, State> {
 
   componentWillReceiveProps(): void {
     this.setState({
+      activeBets: [],
       loading: true,
       owner: undefined,
       members: []
