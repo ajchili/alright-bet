@@ -98,4 +98,69 @@ export default async (): Promise<void> => {
       },
     ],
   });
+  await createTableAndThrowUnknownErr({
+    name: "bets",
+    rows: [
+      {
+        name: "id",
+        type: "SERIAL",
+        primaryKey: true,
+        unique: true,
+      },
+      {
+        name: "creator_id",
+        type: "VARCHAR (100)",
+        references: "users(id)",
+      },
+      {
+        name: "winner_id",
+        type: "VARCHAR (100)",
+        references: "users(id)",
+        optional: true,
+      },
+      {
+        name: "name",
+        type: "VARCHAR (100)",
+      },
+      {
+        name: "description",
+        type: "TEXT",
+        optional: true,
+      },
+      {
+        name: "proof",
+        type: "TEXT",
+        optional: true,
+      },
+    ],
+  });
+  await createTableAndThrowUnknownErr({
+    name: "wagers",
+    rows: [
+      {
+        name: "id",
+        type: "SERIAL",
+        primaryKey: true,
+        unique: true,
+      },
+      {
+        name: "bet_id",
+        type: "INTEGER",
+        references: "bets(id)",
+      },
+      {
+        name: "user_id",
+        type: "VARCHAR (100)",
+        references: "users(id)",
+      },
+      {
+        name: "amount",
+        type: "MONEY",
+      },
+      {
+        name: "time_placed",
+        type: "INTEGER",
+      },
+    ],
+  });
 };
