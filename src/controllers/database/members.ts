@@ -63,3 +63,24 @@ export const getForGroup = async (id: number): Promise<GroupMember[]> => {
     );
   });
 };
+
+export const isUserInGroup = async (
+  user: User,
+  groupId: number
+): Promise<boolean> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT * FROM members WHERE user_id = $1 AND group_id = $2",
+      [user.id, groupId],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.rowCount === 1);
+        }
+      }
+    );
+  });
+};

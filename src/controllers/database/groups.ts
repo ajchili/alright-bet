@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { constants, Group, User } from "../../lib/v1";
+import { constants, Group, Member, User } from "../../lib/v1";
 import { create as createMember } from "./members";
 import { getId as getRoleId } from "./roles";
 import { getClient } from "./utils";
@@ -57,12 +57,22 @@ export const find = async (id: number): Promise<Group> => {
         if (err) {
           reject(err);
         } else {
-          const group = result.rows[0] as Group;
-          resolve(group);
+          if (result.rowCount === 0) {
+            reject(new Error("Group does not exist!"));
+          } else {
+            const group = result.rows[0] as Group;
+            resolve(group);
+          }
         }
       }
     );
   });
+};
+
+export const join = async (user: User, id: number): Promise<Member> => {
+  const group = await find(id);
+  const memberRoleId = await getRoleId(constants.ROLE_NAMES[1]);
+  return createMember(user, group.id, memberRoleId);
 };
 
 export const getOwner = async (id: number): Promise<User> => {

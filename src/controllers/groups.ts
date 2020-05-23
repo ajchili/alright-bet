@@ -1,4 +1,4 @@
-import { Group, GroupMember, User } from "../lib/v1";
+import { Group, GroupMember, Member, User } from "../lib/v1";
 import { groups, members } from "./database";
 
 export const create = async (
@@ -25,4 +25,11 @@ export const getMembers = async (id: number): Promise<GroupMember[]> => {
 
 export const getOwner = async (id: number): Promise<User> => {
   return await groups.getOwner(id);
+};
+
+export const join = async (user: User, id: number): Promise<void> => {
+  const alreadyInGroup = await members.isUserInGroup(user, id);
+  if (!alreadyInGroup) {
+    await groups.join(user, id);
+  }
 };
