@@ -57,6 +57,4 @@ export interface TableRowData {
   value: string;
 }
 
-export interface User extends DiscordUser {
-  lastLoginTime?: number;
-}
+export interface User extends DiscordUser {}
