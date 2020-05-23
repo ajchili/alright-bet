@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 import { User, Group } from "./lib/v1";
 import Navbar from "./components/Navbar";
+import CreateBet from "./pages/CreateBet";
 import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";
 import JoinGroup from "./pages/JoinGroup";
@@ -43,6 +44,20 @@ export default class extends Component<Props> {
                       selectedGroup={group || null}
                     />;
                   }}
+                />
+              }
+              {me !== null &&
+                <Route
+                  path="/bets/create"
+                  exact
+                  render={(props => {
+                    const params = new URLSearchParams(props.location.search);
+                    const group: number = parseInt(params.get("group") || "null", 10);
+                    if (isNaN(group)) {
+                      return <Redirect to="/" />;
+                    }
+                    return <CreateBet group={group} />;
+                  })}
                 />
               }
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}

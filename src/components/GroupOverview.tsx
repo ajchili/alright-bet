@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Button, Header, Message, Segment, Table } from "semantic-ui-react";
 import { Group, GroupMember, User } from "../lib/v1";
 
@@ -152,7 +153,9 @@ export default class extends Component<Props, State> {
             </p>
           </Message>
         }
-        <Button color="green">Make a bet</Button>
+        <Link to={`/bets/create?group=${group.id}`}>
+          <Button color="green">Make a bet</Button>
+        </Link>
       </Segment>
     );
   }

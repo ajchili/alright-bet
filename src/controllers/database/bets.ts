@@ -11,7 +11,7 @@ export const create = async (
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
-      "INSERT INTO bets(creator_id, name, description) VALUES($1, $2, $3) RETURNING *",
+      "INSERT INTO bets(creator_id, group_id, name, description) VALUES($1, $2, $3, $4) RETURNING *",
       [user.id, groupID, name, description],
       (err: Error, result: QueryResult) => {
         client.end();

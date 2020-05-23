@@ -19,7 +19,7 @@ router.post("/create", async (req: Request, res: Response) => {
     const groupId = parseInt(id, 10);
     const group = await Groups.find(groupId);
     await Bets.create(user, group.id, name, description);
-    res.status(200).send();
+    res.status(200).send({ redirect: `/?group=${group.id}` });
   } catch (err) {
     res.status(500).send();
   }
