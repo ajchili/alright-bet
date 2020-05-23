@@ -1,27 +1,17 @@
 import React, { Component } from "react";
-import { Button, Grid, Header, Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import GroupList from "../components/GroupList";
-import { Group } from "../lib/v1";
+import GroupOverview from "../components/GroupOverview";
+import { Group, User } from "../lib/v1";
 
 interface Props {
   groups: Group[];
+  me: User;
   selectedGroup: number | null;
 }
 export default class extends Component<Props> {
-  _deleteGroup = (id: number) => {
-    fetch(`/api/v1/groups/${id}`, {
-      method: "DELETE"
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
-      .catch(console.error);
-  };
-
   render(): JSX.Element {
-    const { groups, selectedGroup } = this.props;
+    const { groups, me, selectedGroup } = this.props;
     const group = groups.find(e => e.id === selectedGroup);
 
     return (
@@ -31,19 +21,7 @@ export default class extends Component<Props> {
             <GroupList groups={groups} selectedGroup={selectedGroup} />
           </Grid.Column>
           <Grid.Column width={8}>
-            {group &&
-              <Segment>
-                <Header>
-                  {group.name}
-                </Header>
-                <Button
-                  color="red"
-                  onClick={() => this._deleteGroup(group.id)}
-                >
-                  Delete
-                </Button>
-              </Segment>
-            }
+            {group && <GroupOverview group={group} me={me} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

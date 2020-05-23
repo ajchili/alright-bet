@@ -16,7 +16,6 @@ interface Props {
 export default class extends Component<Props> {
   render(): JSX.Element | null {
     const { groups = [], me = null } = this.props;
-    const authenticated = me !== null;
 
     return (
       <Grid stretched>
@@ -30,8 +29,8 @@ export default class extends Component<Props> {
         <Grid.Row>
           <Grid.Column stretched>
             <Switch>
-              {!authenticated && <Route path="/" exact component={Lander} />}
-              {authenticated &&
+              {me === null && <Route path="/" exact component={Lander} />}
+              {me !== null &&
                 <Route
                   path="/"
                   exact
@@ -40,13 +39,14 @@ export default class extends Component<Props> {
                     const group: number = parseInt(params.get("group") || "null", 10);
                     return <Home
                       groups={groups}
+                      me={me}
                       selectedGroup={group || null}
                     />;
                   }}
                 />
               }
-              {authenticated && <Route path="/groups/create" exact component={CreateGroup} />}
-              {authenticated && <Route path="/groups/join" exact component={JoinGroup} />}
+              {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
+              {me !== null && <Route path="/groups/join" exact component={JoinGroup} />}
               <Route path="/">
                 <Redirect to="/" />
               </Route>
