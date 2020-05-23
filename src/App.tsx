@@ -6,7 +6,6 @@ import Navbar from "./components/Navbar";
 import CreateBet from "./pages/CreateBet";
 import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";
-import JoinGroup from "./pages/JoinGroup";
 import Lander from "./pages/Lander";
 
 interface Props {
@@ -61,7 +60,6 @@ export default class extends Component<Props> {
                 />
               }
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
-              {me !== null && <Route path="/groups/join" exact component={JoinGroup} />}
               <Route path="/">
                 <Redirect to="/" />
               </Route>
