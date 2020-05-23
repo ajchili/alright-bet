@@ -30,6 +30,6 @@
     "src/config",
     "src/lib",
     "src/routes",
-    "src/server.tsx"
+    "src/server.ts"
   ]
 }
