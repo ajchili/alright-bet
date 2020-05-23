@@ -16,7 +16,7 @@ router.get("*", async (req: Request, res: Response) => {
   switch (req.path) {
     case "/":
       if (user != null) {
-        groups = await Groups.getGroupsForUser(user);
+        groups = await Groups.getForUser(user);
       }
       break;
   }
