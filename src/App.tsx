@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 import { User, Group } from "./lib/v1";
 import Navbar from "./components/Navbar";
+import Bet from "./pages/Bet";
 import CreateBet from "./pages/CreateBet";
 import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";
@@ -19,13 +20,16 @@ export default class extends Component<Props> {
 
     return (
       <Grid stretched>
-        {me !== null && (
-          <Grid.Row>
-            <Grid.Column>
-              <Navbar me={me} />
-            </Grid.Column>
-          </Grid.Row>
-        )}
+        <Switch>
+          {me === null && <Route path="/" exact />}
+          <Route path="/">
+            <Grid.Row>
+              <Grid.Column>
+                <Navbar me={me} />
+              </Grid.Column>
+            </Grid.Row>
+          </Route>
+        </Switch>
         <Grid.Row>
           <Grid.Column stretched>
             <Switch>
@@ -59,6 +63,10 @@ export default class extends Component<Props> {
                   })}
                 />
               }
+              <Route path="/bets/:id" exact>
+                <Bet me={me} />
+              </Route>
+              {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
               {me !== null && <Route path="/groups/create" exact component={CreateGroup} />}
               <Route path="/">
                 <Redirect to="/" />

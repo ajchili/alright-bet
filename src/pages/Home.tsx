@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Segment } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import GroupList from "../components/GroupList";
 import GroupOverview from "../components/GroupOverview";
 import { Group, User } from "../lib/v1";

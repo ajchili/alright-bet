@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Button, Popup, Table } from "semantic-ui-react";
 import { ActiveBet } from "../lib/v1";
 
@@ -26,7 +27,9 @@ export default class extends Component<Props> {
         <Table.Cell></Table.Cell>
         <Table.Cell>{activeBet.wagers}</Table.Cell>
         <Table.Cell>
-          <Button>View</Button>
+          <Link to={`/bets/${activeBet.id}`}>
+            <Button>View</Button>
+          </Link>
         </Table.Cell>
       </Table.Row>
     );

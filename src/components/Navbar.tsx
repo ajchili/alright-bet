@@ -4,7 +4,7 @@ import { Image, Menu } from "semantic-ui-react";
 import { User } from "../lib/v1";
 
 interface Props {
-  me: User;
+  me: User | null;
 }
 
 export default class extends Component<Props> {
@@ -13,23 +13,32 @@ export default class extends Component<Props> {
 
     return (
       <Menu>
-        {me.avatar !== null &&
+        {me && me.avatar !== null &&
           <Menu.Item>
             <Image
               src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png`}
               avatar />
           </Menu.Item>
         }
-        <Menu.Item>
-          <Link to="/">
-            Home
+        {me &&
+          <Menu.Item>
+            <Link to="/">
+              Home
           </Link>
-        </Menu.Item>
+          </Menu.Item>
+        }
         <Menu.Menu position='right'>
           <Menu.Item>
-            <a href="/api/v1/authentication/logout">
-              Logout
-            </a>
+            {me ? (
+              <a href="/api/v1/authentication/logout">
+                Logout
+              </a>
+            ) : (
+                <Link to="/">
+                  Login
+                </Link>
+              )
+            }
           </Menu.Item>
         </Menu.Menu>
       </Menu>
