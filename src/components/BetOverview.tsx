@@ -66,6 +66,20 @@ export default class extends Component<Props, State> {
     });
   }
 
+  _shareBet = () => {
+    const bet = this._getBet();
+    if (bet === null) {
+      return;
+    }
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.value = `${window.location.host}/bets/${bet.id}`;
+    input.focus();
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  };
+
   render(): JSX.Element {
     const { me } = this.props;
     const {
@@ -89,7 +103,7 @@ export default class extends Component<Props, State> {
             <Button.Group>
               <Button>Share</Button>
               {me !== null && me.id === bet.creator_id &&
-                <Button color="green">
+                <Button color="green" onClick={this._shareBet}>
                   Mark as Completed
                 </Button>
               }
