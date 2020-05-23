@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Popup, Table } from "semantic-ui-react";
+import { Button, Label, Popup, Table } from "semantic-ui-react";
 import { ActiveBet } from "../lib/v1";
 
 interface Props {
@@ -24,7 +24,18 @@ export default class extends Component<Props> {
             <span>{activeBet.name}</span>
           }
         </Table.Cell>
-        <Table.Cell></Table.Cell>
+        <Table.Cell>
+          {activeBet.betters.map(better => {
+            return (
+              <Label key={better.id} as='a' image>
+                {better.avatar &&
+                  <img src={`https://cdn.discordapp.com/avatars/${better.id}/${better.avatar}.png`} />
+                }
+                {better.username}#{better.discriminator}
+              </Label>
+            );
+          })}
+        </Table.Cell>
         <Table.Cell>{activeBet.wagers}</Table.Cell>
         <Table.Cell>
           <Link to={`/bets/${activeBet.id}`}>

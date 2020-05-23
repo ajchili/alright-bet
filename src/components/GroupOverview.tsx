@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Header, Message, Segment } from "semantic-ui-react";
-import { ActiveBet, Group, GroupMember, User } from "../lib/v1";
+import { ActiveBet, DetailedWager, Group, GroupMember, User } from "../lib/v1";
 import ActiveBetsTable from "./ActiveBetsTable";
 
 interface Props {
@@ -65,21 +65,58 @@ export default class extends Component<Props, State> {
 
   _loadGroupData = () => {
     Promise.all([
-      this._loadGroupAciveBets(),
+      this._loadGroupActiveBets(),
       this._loadGroupOwner(),
       this._loadGroupMembers()
     ])
       .then(() => this.setState({ loading: false }));
   };
 
-  _loadGroupAciveBets = () => {
+  _loadGroupActiveBets = () => {
     const { group } = this.props;
     return new Promise((resolve, reject) => {
       fetch(`/api/v1/groups/${group.id}/bets`)
         .then(response => response.json())
         .then(json => {
           const activeBets: ActiveBet[] = json as ActiveBet[];
-          this.setState({ activeBets }, resolve);
+          return activeBets;
+        })
+        .then(activeBets => {
+          const wagerPromises = activeBets.map((activeBet: ActiveBet, i: number) => {
+            return new Promise((resolve, reject) => {
+              this._loadGroupActiveBetWagers(activeBet)
+                .then(wagers => {
+                  const betterIds = new Set(wagers.map(wager => wager.user_id));
+                  activeBets[i].betters = Array.from(betterIds).map(id => {
+                    const wager = wagers.find(e => e.user_id === id);
+                    return {
+                      id: wager!.user_id,
+                      username: wager!.username,
+                      discriminator: wager!.discriminator,
+                      avatar: wager!.avatar
+                    };
+                  });
+                  activeBets[i].wagers = wagers.length;
+                  resolve();
+                })
+                .catch(reject);
+            });
+          });
+          Promise.all(wagerPromises)
+            .then(() => this.setState({ activeBets }, resolve))
+            .catch(reject);
+        })
+        .catch(reject);
+    });
+  };
+
+  _loadGroupActiveBetWagers = (bet: ActiveBet): Promise<DetailedWager[]> => {
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v1/bets/${bet.id}/wagers`)
+        .then(response => response.json())
+        .then(json => {
+          const detailedWagers: DetailedWager[] = json as DetailedWager[];
+          resolve(detailedWagers);
         })
         .catch(reject);
     });
