@@ -3,6 +3,7 @@ import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
 import * as Members from "../../controllers/members";
 import * as Wagers from "../../controllers/wagers";
+import { DetailedWager } from "../../lib/v1";
 
 const router = Router();
 
@@ -52,7 +53,39 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/:id/wagers", async (req: Request, res: Response) => {});
+router.get("/:id/wagers", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const betId = parseInt(id, 10);
+    const bet = await Bets.find(betId);
+    let wagers = await Wagers.getForBet(bet);
+    wagers = wagers
+      .sort((a: DetailedWager, b: DetailedWager): number => {
+        const aTime = new Date(a.time_placed).getTime();
+        const bTime = new Date(b.time_placed).getTime();
+        return bTime - aTime;
+      });
+    const betters = new Set();
+    wagers.forEach(wager => {
+      if (betters.has(wager.user_id)) {
+        wager.amended = true;
+      }
+      betters.add(wager.user_id);
+    });
+    res.status(200).json(wagers);
+  } catch (err) {
+    switch (err.message) {
+      case "Bet does not exist!":
+      case "Group does not exist!":
+      case "Member does not exist!":
+        res.status(404).send();
+        break;
+      default:
+        res.status(500).send();
+        break;
+    }
+  }
+});
 
 router.post("/:id/wagers/create", async (req: Request, res: Response) => {
   const { user } = req.cookies;
@@ -79,7 +112,6 @@ router.post("/:id/wagers/create", async (req: Request, res: Response) => {
     await Wagers.create(member, bet, wager);
     res.status(200).json({ redirect: `/bets/${bet.id}` });
   } catch (err) {
-    console.error(err);
     switch (err.message) {
       case "Bet does not exist!":
       case "Group does not exist!":

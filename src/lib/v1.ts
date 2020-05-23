@@ -29,6 +29,17 @@ export interface DiscordUser {
   avatar?: string;
 }
 
+export interface DetailedWager {
+  id: number;
+  user_id: string;
+  amount: number;
+  time_placed: Date;
+  username: string;
+  discriminator: string;
+  avatar?: string;
+  amended?: boolean;
+}
+
 export interface Group {
   id: number;
   name: string;

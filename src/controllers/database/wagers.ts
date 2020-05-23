@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { Bet, Member, Wager } from "../../lib/v1";
+import { Bet, DetailedWager, Member, Wager } from "../../lib/v1";
 import { getClient } from "./utils";
 
 export const create = async (
@@ -19,6 +19,25 @@ export const create = async (
         } else {
           const wager = result.rows[0] as Wager;
           resolve(wager);
+        }
+      }
+    );
+  });
+};
+
+export const getForBet = async (bet: Bet): Promise<DetailedWager[]> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT wagers.id, wagers.user_id, wagers.amount, wagers.time_placed, users.username, users.discriminator, users.avatar FROM wagers JOIN users ON wagers.user_id = users.id WHERE bet_id = $1",
+      [bet.id],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          const wagers = result.rows as DetailedWager[];
+          resolve(wagers);
         }
       }
     );

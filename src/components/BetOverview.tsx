@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Button, Header, Message, Segment, Table } from "semantic-ui-react";
-import { Bet, User, Wager } from "../lib/v1";
+import { Button, Header, Image, Message, Segment, Table } from "semantic-ui-react";
+import { Bet, DetailedWager, User } from "../lib/v1";
 import MakeWager from "./MakeWager";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 interface State {
   bet: Bet | null;
   loading: boolean;
-  wagers: Wager[];
+  wagers: DetailedWager[];
 }
 
 export default class extends Component<Props, State> {
@@ -35,7 +35,7 @@ export default class extends Component<Props, State> {
   }
 
   _loadBetData = () => {
-    Promise.all([this._loadBet()])
+    Promise.all([this._loadBet(), this._loadWagers()])
       .then(() => this.setState({ loading: false }))
       .catch(console.error);
   };
@@ -48,6 +48,19 @@ export default class extends Component<Props, State> {
         .then(response => response.json())
         .then(json => {
           this.setState({ bet: json as Bet }, resolve);
+        })
+        .catch(reject);
+    });
+  }
+
+  _loadWagers = () => {
+    const { bet } = this.props;
+    const id = typeof bet === "number" ? bet : bet.id;
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v1/bets/${id}/wagers`)
+        .then(response => response.json())
+        .then(json => {
+          this.setState({ wagers: json as DetailedWager[] }, resolve);
         })
         .catch(reject);
     });
@@ -103,6 +116,35 @@ export default class extends Component<Props, State> {
               </Table.Row>
             </Table.Header>
             <Table.Body>
+              {wagers
+                .map(wager => {
+                  return (
+                    <Table.Row
+                      positive={!wager.amended}
+                      negative={wager.amended}
+                    >
+                      <Table.Cell>
+                        <Header as='h4' image>
+                          {wager.avatar &&
+                            <Image
+                              src={`https://cdn.discordapp.com/avatars/${wager.user_id}/${wager.avatar}.png`}
+                              rounded
+                              size='mini'
+                            />
+                          }
+                          <Header.Content>
+                            {wager.username}
+                            <Header.Subheader>
+                              {wager.discriminator}
+                            </Header.Subheader>
+                          </Header.Content>
+                        </Header>
+                      </Table.Cell>
+                      <Table.Cell>{wager.amount}</Table.Cell>
+                      <Table.Cell>{wager.time_placed}</Table.Cell>
+                    </Table.Row>
+                  )
+                })}
             </Table.Body>
           </Table>
         }
