@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Header, Message, Segment, Table } from "semantic-ui-react";
-import { Group, GroupMember, User } from "../lib/v1";
+import { Button, Header, Message, Segment } from "semantic-ui-react";
+import { ActiveBet, Group, GroupMember, User } from "../lib/v1";
+import ActiveBetsTable from "./ActiveBetsTable";
 
 interface Props {
   group: Group;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 interface State {
-  activeBets: any[];
+  activeBets: ActiveBet[];
   loading: boolean;
   owner?: User;
   members: GroupMember[];
@@ -62,8 +63,25 @@ export default class extends Component<Props, State> {
   }
 
   _loadGroupData = () => {
-    Promise.all([this._loadGroupOwner(), this._loadGroupMembers()])
+    Promise.all([
+      this._loadGroupAciveBets(),
+      this._loadGroupOwner(),
+      this._loadGroupMembers()
+    ])
       .then(() => this.setState({ loading: false }));
+  };
+
+  _loadGroupAciveBets = () => {
+    const { group } = this.props;
+    return new Promise((resolve, reject) => {
+      fetch(`/api/v1/groups/${group.id}/bets`)
+        .then(response => response.json())
+        .then(json => {
+          const activeBets: ActiveBet[] = json as ActiveBet[];
+          this.setState({ activeBets }, resolve);
+        })
+        .catch(reject);
+    });
   };
 
   _loadGroupOwner = () => {
@@ -134,16 +152,7 @@ export default class extends Component<Props, State> {
         </Button.Group>
         <Header>Active Bets</Header>
         {activeBets.length > 0 &&
-          <Table basic="very" celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Creator</Table.HeaderCell>
-                <Table.HeaderCell>Betters</Table.HeaderCell>
-                <Table.HeaderCell># of Wagers</Table.HeaderCell>
-                <Table.HeaderCell></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-          </Table>
+          <ActiveBetsTable activeBets={activeBets} />
         }
         {activeBets.length === 0 &&
           <Message>

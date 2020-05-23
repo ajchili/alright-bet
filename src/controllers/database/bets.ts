@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { Bet, User } from "../../lib/v1";
+import { ActiveBet, Bet, User } from "../../lib/v1";
 import { getClient } from "./utils";
 
 export const create = async (
@@ -20,6 +20,41 @@ export const create = async (
         } else {
           const bet = result.rows[0] as Bet;
           resolve(bet);
+        }
+      }
+    );
+  });
+};
+
+export const getActiveForGroup = async (
+  groupID: number
+): Promise<ActiveBet[]> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT bets.id, bets.name, bets.description, users.id AS creator, users.username, users.discriminator, users.avatar FROM bets JOIN users ON bets.creator_id = users.id WHERE bets.group_id = $1 AND bets.proof IS NULL",
+      [groupID],
+      (err: Error, result: QueryResult) => {
+        client.end();
+        if (err) {
+          reject(err);
+        } else {
+          const activeBets: ActiveBet[] = result.rows.map(row => {
+            return {
+              id: row.id,
+              name: row.name,
+              description: row.description,
+              creator: {
+                id: row.creator,
+                username: row.username,
+                discriminator: row.discriminator,
+                avatar: row.avatar
+              },
+              betters: [],
+              wagers: 0
+            };
+          });
+          resolve(activeBets);
         }
       }
     );

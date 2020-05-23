@@ -3,6 +3,15 @@ export const constants = {
   ROLE_NAMES: ["OWNER", "MEMBER"],
 };
 
+export interface ActiveBet {
+  id: number;
+  name: string;
+  description: string;
+  creator: User;
+  betters: User[];
+  wagers: number;
+}
+
 export interface Bet {
   id: number;
   creator_id: string;
