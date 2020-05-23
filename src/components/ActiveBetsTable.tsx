@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Popup, Table } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import { ActiveBet } from "../lib/v1";
 import ActiveBetsTableRow from "./ActiveBetsTableRow";
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Header, Message, Segment } from "semantic-ui-react";
+import { Button, Header, Message, Popup, Segment } from "semantic-ui-react";
 import { ActiveBet, DetailedWager, Group, GroupMember, User } from "../lib/v1";
 import ActiveBetsTable from "./ActiveBetsTable";
 
@@ -152,7 +152,7 @@ export default class extends Component<Props, State> {
     const { group } = this.props;
     const input = document.createElement('input');
     document.body.appendChild(input);
-    input.value = `${window.location.host}/api/v1/groups/${group.id}/join`;
+    input.value = `${window.location.protocol}//${window.location.host}/api/v1/groups/${group.id}/join`;
     input.focus();
     input.select();
     document.execCommand('copy');
@@ -169,7 +169,10 @@ export default class extends Component<Props, State> {
           {group.name}
         </Header>
         <Button.Group>
-          <Button onClick={this._shareGroup}>Share</Button>
+          <Popup
+            content={"Click to copy the link to this group to your clipboard."}
+            trigger={<Button onClick={this._shareGroup}>Share</Button>}
+          />
           {owner !== undefined && me.id === owner.id &&
             <Button
               attached="right"

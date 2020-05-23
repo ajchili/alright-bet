@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Header, Image, Message, Segment, Table } from "semantic-ui-react";
+import { Button, Header, Image, Message, Popup, Segment, Table } from "semantic-ui-react";
 import { Bet, DetailedWager, User } from "../lib/v1";
 import MakeWager from "./MakeWager";
 
@@ -73,7 +73,7 @@ export default class extends Component<Props, State> {
     }
     const input = document.createElement('input');
     document.body.appendChild(input);
-    input.value = `${window.location.host}/bets/${bet.id}`;
+    input.value = `${window.location.protocol}//${window.location.host}/bets/${bet.id}`;
     input.focus();
     input.select();
     document.execCommand('copy');
@@ -101,9 +101,12 @@ export default class extends Component<Props, State> {
               </p>
             }
             <Button.Group>
-              <Button>Share</Button>
+              <Popup
+                content={"Click to copy the link to this bet to your clipboard."}
+                trigger={<Button onClick={this._shareBet}>Share</Button>}
+              />
               {me !== null && me.id === bet.creator_id &&
-                <Button color="green" onClick={this._shareBet}>
+                <Button color="green">
                   Mark as Completed
                 </Button>
               }
