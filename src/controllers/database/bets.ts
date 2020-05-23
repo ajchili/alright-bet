@@ -14,7 +14,7 @@ export const create = async (
       "INSERT INTO bets(creator_id, group_id, name, description) VALUES($1, $2, $3, $4) RETURNING *",
       [user.id, groupID, name, description],
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         } else {
@@ -55,7 +55,7 @@ export const getActiveForGroup = async (
       "SELECT bets.id, bets.name, bets.description, users.id AS creator, users.username, users.discriminator, users.avatar FROM bets JOIN users ON bets.creator_id = users.id WHERE bets.group_id = $1 AND bets.proof IS NULL",
       [groupID],
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         } else {

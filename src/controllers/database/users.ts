@@ -9,7 +9,7 @@ export const create = async (user: DiscordUser): Promise<QueryResult> => {
       "INSERT INTO users(id, username, avatar, discriminator) VALUES($1, $2, $3, $4) RETURNING *",
       [user.id, user.username, user.avatar, user.discriminator],
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         } else {
@@ -27,7 +27,7 @@ export const get = async (id: string): Promise<User> => {
       "SELECT * FROM users WHERE id = $1",
       [id],
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         } else {
@@ -46,7 +46,7 @@ export const update = async (user: User): Promise<QueryResult> => {
       "UPDATE users SET(id, username, avatar, discriminator) VALUES($1, $2, $3, $4) WHERE id = $1",
       [user.id, user.username, user.avatar, user.discriminator],
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         } else {

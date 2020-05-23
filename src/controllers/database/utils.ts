@@ -1,14 +1,18 @@
-import { Client, QueryResult } from "pg";
+import { Pool, PoolClient, QueryResult } from "pg";
 import { Table, TableRow } from "../../lib/v1";
 
-export const getClient = async (): Promise<Client> => {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
-  await client.connect();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+export const getClient = async (): Promise<PoolClient> => {
+  const client = await pool.connect();
   return client;
 };
 
@@ -33,7 +37,7 @@ export const createTable = (table: Table): Promise<QueryResult> => {
         ${table.rows.map(getTableRowAsQueryString).join(",\n")}
       )`,
       (err: Error, result: QueryResult) => {
-        client.end();
+        client.release();
         if (err) {
           reject(err);
         }
