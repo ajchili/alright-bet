@@ -31,7 +31,7 @@ export default class extends Component {
             </Menu>
           </Grid.Column>
         </Grid.Row>
-      </Grid >
+      </Grid>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
-import { User } from "./lib/v1/discord";
+import { User } from "./lib/v1";
 import Navbar from "./components/Navbar";
 import CreateGroup from "./pages/CreateGroup";
 import Home from "./pages/Home";

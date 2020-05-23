@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Image, Menu } from "semantic-ui-react";
-import { User } from "../lib/v1/discord";
+import { User } from "../lib/v1";
 
 interface Props {
   me: User;

@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { getMe } from "../../api/v1/discord";
 import { discordAuth } from "../../config/oauth2";
-import { findAndUpdateOrCreateUser } from "../../controllers/database";
+import * as Users from "../../controllers/users";
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.get("/callback", async (req: Request, res: Response) => {
   try {
     const user = await discordAuth.code.getToken(req.originalUrl);
     const discordUser = await getMe(user.accessToken);
-    findAndUpdateOrCreateUser(discordUser)
+    Users.findAndUpdateOrCreate(discordUser)
       .catch(() => {
         // TODO: Handle error, ignore for now
       });

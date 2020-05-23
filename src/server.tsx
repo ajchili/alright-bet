@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import fs from "fs";
 import jwt from "jsonwebtoken";
 import path from "path";
@@ -16,7 +16,7 @@ import App from "./App";
 import AuthenticationRouter from "./routes/v1/authentication";
 import { seed } from "./controllers/database";
 import { getMe } from "./api/v1/discord";
-import { User } from "./lib/v1/discord";
+import { User } from "./lib/v1";
 
 const app: Express = express();
 app.use(bodyParser.json());
@@ -31,11 +31,8 @@ app.use(
 app.use(express.static("build", { index: false }));
 const PORT: string = process.env.PORT || "80";
 
-app.use("/api/v1/authentication", AuthenticationRouter);
-
-app.get("*", async (req: Request, res: Response) => {
+app.use(async (req: Request, _: Response, next: NextFunction) => {
   const token = req.session.accessToken;
-  let me: User;
   if (token !== undefined && token.length > 0) {
     const decodedAccessToken = jwt.decode(token, { json: true });
     const { accessToken, exp: tokenExpiresAt = 0 } = decodedAccessToken;
@@ -43,16 +40,26 @@ app.get("*", async (req: Request, res: Response) => {
     const tokenExpired = now > tokenExpiresAt;
     try {
       if (!tokenExpired) {
-        me = await getMe(accessToken);
+        const user: User = await getMe(accessToken);
+        req.cookies = {
+          user
+        };
       }
     } catch (err) {
       // TODO: Handle error
       console.error(err);
     }
   }
+  next();
+});
+
+app.use("/api/v1/authentication", AuthenticationRouter);
+
+app.get("*", async (req: Request, res: Response) => {
+  const { user } = req.cookies;
   const reactApp = ReactDOMServer.renderToString(
     <StaticRouter location={req.url}>
-      <App me={me} />
+      <App me={user} />
     </StaticRouter>
   );
 
@@ -67,7 +74,7 @@ app.get("*", async (req: Request, res: Response) => {
     res.status(200);
     const html = data
       .replace("<script id=\"data\"></script>", `<script>
-        window.__INITIAL__DATA__ = ${JSON.stringify({ me })};
+        window.__INITIAL__DATA__ = ${JSON.stringify({ me: user })};
       </script>`)
       .replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`);
     res.send(html);
