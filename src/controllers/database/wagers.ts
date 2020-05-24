@@ -11,7 +11,7 @@ export const create = async (
   return new Promise((resolve, reject) => {
     client.query(
       "INSERT INTO wagers(bet_id, user_id, amount, time_placed) VALUES($1, $2, $3, $4) RETURNING *",
-      [bet.id, member.user_id, amount, new Date()],
+      [bet.id, member.user_id, amount, "now()"],
       (err: Error, result: QueryResult) => {
         client.release(true);
         if (err) {
