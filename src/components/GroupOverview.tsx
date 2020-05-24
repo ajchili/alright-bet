@@ -64,6 +64,11 @@ export default class extends Component<Props, State> {
       fetch(`/api/v1/groups/${group.id}/leave`, {
         method: "POST"
       })
+        .then(response => response.json())
+        .then(json => {
+          const { redirect = "/" } = json;
+          window.location.href = redirect;
+        })
         .catch(console.error);
     }
   }

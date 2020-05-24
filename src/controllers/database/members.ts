@@ -85,6 +85,27 @@ export const getForGroup = async (id: number): Promise<GroupMember[]> => {
   });
 };
 
+export const leaveGroup = async (
+  user: User,
+  group: Group
+): Promise<QueryResult> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "DELETE FROM members WHERE user_id = $1 AND group_id = $2",
+      [user.id, group.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};
+
 export const isUserInGroup = async (
   user: User,
   groupId: number

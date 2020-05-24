@@ -1,10 +1,7 @@
 import { Group, GroupMember, User } from "../lib/v1";
 import { groups, members } from "./database";
 
-export const create = async (
-  user: User,
-  groupName: string
-): Promise<Group> => {
+export const create = async (user: User, groupName: string): Promise<Group> => {
   return await groups.create(user, groupName);
 };
 
@@ -35,5 +32,12 @@ export const join = async (user: User, id: number): Promise<void> => {
   const alreadyInGroup = await members.isUserInGroup(user, id);
   if (!alreadyInGroup) {
     await groups.join(user, id);
+  }
+};
+
+export const leave = async (user: User, group: Group): Promise<void> => {
+  const alreadyInGroup = await members.isUserInGroup(user, group.id);
+  if (alreadyInGroup) {
+    await members.leaveGroup(user, group);
   }
 };
