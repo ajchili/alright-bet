@@ -14,12 +14,13 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
   try {
     const groupId = parseInt(id, 10);
-    const groupOwner = await Groups.getOwner(groupId);
+    const group = await Groups.find(groupId);
+    const groupOwner = await Groups.getOwner(group.id);
     if (groupOwner.id !== user.id) {
       res.status(401).send();
       return;
     }
-    await Groups.destroy(groupId);
+    await Groups.destroy(group);
     res.status(200).send({ redirect: "/" });
   } catch (err) {
     res.status(500).send();

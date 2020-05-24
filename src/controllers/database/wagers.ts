@@ -67,3 +67,23 @@ export const getMostRecentWagerForBet = async (
     );
   });
 };
+
+export const propagateBetDestroy = async (
+  bet: Bet
+): Promise<QueryResult> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "DELETE FROM wagers WHERE bet_id = $1",
+      [bet.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+  });
+};

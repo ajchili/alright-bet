@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { ActiveBet, Bet, User } from "../../lib/v1";
+import { ActiveBet, Bet, Group, User } from "../../lib/v1";
 import { getClient } from "./utils";
 
 export const create = async (
@@ -76,6 +76,44 @@ export const getActiveForGroup = async (
             };
           });
           resolve(activeBets);
+        }
+      }
+    );
+  });
+};
+
+export const getForGroup = async (group: Group): Promise<Bet[]> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT * FROM bets WHERE group_id = $1",
+      [group.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.rows as Bet[]);
+        }
+      }
+    );
+  });
+};
+
+export const propagateGroupDestroy = async (
+  group: Group
+): Promise<QueryResult> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "DELETE FROM bets WHERE group_id = $1",
+      [group.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
         }
       }
     );

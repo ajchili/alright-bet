@@ -1,15 +1,16 @@
 import { Group, GroupMember, User } from "../lib/v1";
-import { groups, members } from "./database";
+import { bets, groups, members, wagers } from "./database";
 
 export const create = async (user: User, groupName: string): Promise<Group> => {
   return await groups.create(user, groupName);
 };
 
-export const destroy = async (id: number) => {
-  return await Promise.all([
-    groups.destroy(id),
-    members.propagateGroupDestroy(id),
-  ]);
+export const destroy = async (group: Group): Promise<void> => {
+  const _bets = await bets.getForGroup(group);
+  await Promise.all(_bets.map((bet) => wagers.propagateBetDestroy(bet)));
+  await bets.propagateGroupDestroy(group);
+  await members.propagateGroupDestroy(group.id);
+  await groups.destroy(group.id);
 };
 
 export const find = async (id: number) => {
