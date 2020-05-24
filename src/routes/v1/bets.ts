@@ -3,7 +3,6 @@ import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
 import * as Members from "../../controllers/members";
 import * as Wagers from "../../controllers/wagers";
-import { DetailedWager } from "../../lib/v1";
 
 const router = Router();
 
