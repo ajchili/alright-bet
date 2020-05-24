@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Header, Image, Message, Popup, Segment } from "semantic-ui-react";
+import { Button, Header, Message, Popup, Segment } from "semantic-ui-react";
 import { Bet, DetailedWager, User } from "../lib/v1";
 import BetWagersTable from "./BetWagersTable";
 import MakeWager from "./MakeWager";
