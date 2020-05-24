@@ -41,6 +41,20 @@ export default class extends Component<Props, State> {
     }, this._loadGroupData);
   }
 
+  _stimulateEconomy = () => {
+    const { group } = this.props;
+    this.setState({ loading: true });
+    fetch(`/api/v1/groups/${group.id}/stimulateEconomy`, {
+      method: "POST"
+    })
+      .then(response => response.json())
+      .then(json => {
+        const { redirect = "/" } = json;
+        window.location.href = redirect;
+      })
+      .catch(console.error);
+  };
+
   _deleteGroup = () => {
     const { group } = this.props;
     if (confirm("Are your sure you want to delete this group?")) {
@@ -184,8 +198,20 @@ export default class extends Component<Props, State> {
             trigger={<Button onClick={this._shareGroup}>Share</Button>}
           />
           {owner !== undefined && me.id === owner.id &&
+            <Popup
+              content={"Give more marbles to all group members."}
+              trigger={
+                <Button
+                  color="teal"
+                  onClick={this._stimulateEconomy}
+                >
+                  Stimulate Economy
+              </Button>
+              }
+            />
+          }
+          {owner !== undefined && me.id === owner.id &&
             <Button
-              attached="right"
               color="red"
               onClick={this._deleteGroup}
             >

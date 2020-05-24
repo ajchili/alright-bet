@@ -107,6 +107,30 @@ router.post("/:id/leave", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/:id/stimulateEconomy", async (req: Request, res: Response) => {
+  const { user } = req.cookies;
+  if (!user) {
+    res.status(401).redirect("/");
+    return;
+  }
+  const { id } = req.params;
+  try {
+    const groupId = parseInt(id, 10);
+    const group = await Groups.find(groupId);
+    await Groups.stimulateEconomy(group);
+    res.status(200).json({ redirect: `/?group=${group.id}` });
+  } catch (err) {
+    switch (err.message) {
+      case "Group does not exist!":
+        res.status(404).send();
+        break;
+      default:
+        res.status(500).send();
+        break;
+    }
+  }
+});
+
 router.get("/:id/bets", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {

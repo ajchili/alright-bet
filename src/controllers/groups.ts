@@ -42,3 +42,7 @@ export const leave = async (user: User, group: Group): Promise<void> => {
     await members.leaveGroup(user, group);
   }
 };
+
+export const stimulateEconomy = async (group: Group): Promise<void> => {
+  await members.stimulateEconomyForGroup(group);
+};

@@ -127,6 +127,24 @@ export const isUserInGroup = async (
   });
 };
 
+export const stimulateEconomyForGroup = async (group: Group): Promise<void> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "UPDATE members SET currency = currency + $2 WHERE group_id = $1",
+      [group.id, constants.STIMULUS_CURRENCY_AMOUNT],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      }
+    );
+  });
+};
+
 export const update = async (member: Member): Promise<Member> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {

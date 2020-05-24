@@ -1,6 +1,7 @@
 export const constants = {
   DEFAULT_CURRENCY_AMOUNT: 10,
   ROLE_NAMES: ["OWNER", "MEMBER"],
+  STIMULUS_CURRENCY_AMOUNT: 10,
 };
 
 export interface ActiveBet {
