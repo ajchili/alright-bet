@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Button, Header, Image, Message, Popup, Segment, Table } from "semantic-ui-react";
+import { Button, Header, Image, Message, Popup, Segment } from "semantic-ui-react";
 import { Bet, DetailedWager, User } from "../lib/v1";
+import BetWagersTable from "./BetWagersTable";
 import MakeWager from "./MakeWager";
 
 interface Props {
@@ -137,51 +138,7 @@ export default class extends Component<Props, State> {
             </div>
           )}
         <Header>Wagers</Header>
-        {wagers.length > 0 &&
-          <Table basic="very" celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Better</Table.HeaderCell>
-                <Table.HeaderCell>Amount</Table.HeaderCell>
-                <Table.HeaderCell>Time</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {wagers
-                .map(wager => {
-                  const validWager = wager.amount > 0 && !wager.amended;
-                  return (
-                    <Table.Row
-                      positive={validWager}
-                      negative={!validWager}
-                    >
-                      <Table.Cell>
-                        <Header as='h4' image>
-                          {wager.avatar &&
-                            <Image
-                              src={`https://cdn.discordapp.com/avatars/${wager.user_id}/${wager.avatar}.png`}
-                              rounded
-                              size='mini'
-                            />
-                          }
-                          <Header.Content>
-                            {wager.username}
-                            <Header.Subheader>
-                              {wager.discriminator}
-                            </Header.Subheader>
-                          </Header.Content>
-                        </Header>
-                      </Table.Cell>
-                      <Table.Cell>{wager.amount || "Removed Wager"}</Table.Cell>
-                      <Table.Cell>
-                        {wager.time_placed}
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })}
-            </Table.Body>
-          </Table>
-        }
+        {wagers.length > 0 && <BetWagersTable wagers={wagers} />}
         {wagers.length === 0 &&
           <Message>
             <Message.Header>There are currently no active wagers</Message.Header>
