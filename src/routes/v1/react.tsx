@@ -16,25 +16,19 @@ router.get("*", async (req: Request, res: Response) => {
   let groups: Group[] = [];
   let bet: Bet;
   try {
-    switch (req.path) {
-      case "/":
-        if (user != null) {
-          groups = await Groups.getForUser(user);
-        }
-        break;
-      default:
-        if (req.path.startsWith("/bets/")) {
-          const id = req.path.substr(req.path.lastIndexOf("/") + 1);
-          const betId = parseInt(id, 10);
-          if (!isNaN(betId)) {
-            bet = await Bets.find(betId);
-          }
-        }
-        break;
+    if (user != null) {
+      groups = await Groups.getForUser(user);
+    }
+    if (req.path.startsWith("/bets/")) {
+      const id = req.path.substr(req.path.lastIndexOf("/") + 1);
+      const betId = parseInt(id, 10);
+      if (!isNaN(betId)) {
+        bet = await Bets.find(betId);
+      }
     }
   } catch (err) {
-    console.error(err);
     // Ignore error
+    console.error("React SSR error:", err);
   }
 
   const reactApp = ReactDOMServer.renderToString(
