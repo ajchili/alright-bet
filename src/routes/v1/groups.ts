@@ -45,6 +45,20 @@ router.post("/create", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/mine", async (req: Request, res: Response) => {
+  const { user } = req.cookies;
+  if (!user) {
+    res.status(401).redirect("/");
+    return;
+  }
+  try {
+    const groups = await Groups.getForUser(user);
+    res.status(200).send(groups);
+  } catch (err) {
+    res.status(500).send();
+  }
+});
+
 router.get("/:id/join", async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {

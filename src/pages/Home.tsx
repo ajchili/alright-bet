@@ -9,9 +9,32 @@ interface Props {
   me: User;
   selectedGroup: number | null;
 }
-export default class extends Component<Props> {
+
+interface State {
+  groups: Group[];
+}
+
+export default class extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      groups: props.groups
+    };
+  }
+
+  componentDidMount(): void {
+    const { groups } = this.props;
+    if (typeof window !== "undefined" && groups.length === 0) {
+      fetch("/api/v1/groups/mine")
+        .then(response => response.json())
+        .then(json => this.setState({ groups: json as Group[] }))
+        .catch(console.error);
+    }
+  }
+
   render(): JSX.Element {
-    const { groups, me, selectedGroup } = this.props;
+    const { me, selectedGroup } = this.props;
+    const { groups } = this.state;
     const group = groups.find(e => e.id === selectedGroup);
 
     return (
