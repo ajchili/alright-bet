@@ -187,7 +187,7 @@ export default class extends Component<Props, State> {
             <Message.Header>There are currently no active wagers</Message.Header>
           </Message>
         }
-        {me && bet &&
+        {bet &&
           <MakeWager
             bet={bet}
             me={me}
