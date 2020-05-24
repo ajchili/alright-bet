@@ -6,5 +6,5 @@ export const discordAuth = new ClientOAuth2({
   accessTokenUri: "https://discord.com/api/oauth2/token",
   authorizationUri: "https://discord.com/oauth2/authorize",
   redirectUri: process.env.DISCORD_REDIRECT_URI,
-  scopes: ["identify", "email"],
+  scopes: ["identify"],
 });
