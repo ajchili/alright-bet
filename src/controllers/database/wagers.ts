@@ -43,3 +43,27 @@ export const getForBet = async (bet: Bet): Promise<DetailedWager[]> => {
     );
   });
 };
+
+export const getMostRecentWagerForBet = async (
+  member: Member,
+  bet: Bet
+): Promise<number> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "SELECT wagers.amount FROM wagers JOIN users ON wagers.user_id = $1 WHERE bet_id = $2 ORDER BY time_placed DESC",
+      [member.user_id, bet.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          resolve(0);
+        } else {
+          const { amount = 0 } = result.rows[0];
+          resolve(amount);
+        }
+      }
+    );
+  });
+};

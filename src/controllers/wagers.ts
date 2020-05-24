@@ -11,4 +11,11 @@ export const create = async (
 
 export const getForBet = async (bet: Bet): Promise<DetailedWager[]> => {
   return await wagers.getForBet(bet);
-}
+};
+
+export const getMostRecentWagerForBet = async (
+  member: Member,
+  bet: Bet
+): Promise<number> => {
+  return await wagers.getMostRecentWagerForBet(member, bet);
+};

@@ -24,7 +24,12 @@ export default class extends Component<Props, State> {
       loading: true,
       members: []
     };
-    this._loadGroupData();
+  }
+
+  componentDidMount(): void {
+    if (typeof window !== "undefined") {
+      this._loadGroupData();
+    }
   }
 
   componentWillReceiveProps(): void {

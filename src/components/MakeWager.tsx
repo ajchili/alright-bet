@@ -6,6 +6,7 @@ interface Props {
   bet: Bet;
   me: User | null;
   groupId: number;
+  previousWager?: number;
 }
 
 interface State {
@@ -42,12 +43,13 @@ export default class extends Component<Props, State> {
   };
 
   _getMarbles = (): number => {
+    const { previousWager = 0 } = this.props;
     const { membership } = this.state;
     let marbles = 0;
     if (membership) {
       marbles = membership.currency;
     }
-    return marbles;
+    return marbles + previousWager;
   }
 
   _updateWager = (wager: string) => {
@@ -81,7 +83,22 @@ export default class extends Component<Props, State> {
       .catch(console.error);
   }
 
+  _removeWager = () => {
+    const { bet } = this.props;
+    this.setState({ loading: true });
+    fetch(`/api/v1/bets/${bet.id}/wagers`, {
+      method: "DELETE",
+    })
+      .then(response => response.json())
+      .then(json => {
+        const { redirect = "/" } = json;
+        window.location.href = redirect;
+      })
+      .catch(console.error);
+  }
+
   _renderWager = (): JSX.Element => {
+    const { previousWager = 0 } = this.props;
     const { loading, wager } = this.state;
     const marbles = this._getMarbles();
 
@@ -112,13 +129,24 @@ export default class extends Component<Props, State> {
             </Grid.Row>
             <Grid.Row>
               <Grid.Column>
-                <Button
-                  loading={loading}
-                  color="green"
-                  onClick={this._submitWager}
-                >
-                  Make a Wager
-                </Button>
+                <Button.Group>
+                  <Button
+                    loading={loading}
+                    color="green"
+                    onClick={this._submitWager}
+                  >
+                    Make a Wager
+                  </Button>
+                  {previousWager > 0 &&
+                    <Button
+                      loading={loading}
+                      color="red"
+                      onClick={this._removeWager}
+                    >
+                      Remove Wager
+                    </Button>
+                  }
+                </Button.Group>
               </Grid.Column>
             </Grid.Row>
           </Grid>
@@ -128,10 +156,34 @@ export default class extends Component<Props, State> {
   };
 
   _renderNoMarblesMessage = (): JSX.Element => {
+    const { previousWager = 0 } = this.props;
+    const { loading } = this.state;
+
     return (
       <Message>
         <Message.Header>You cannot make a wager</Message.Header>
-        <Message.Content>You are all out of marbles.</Message.Content>
+        <Message.Content>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column>
+                You are all out of marbles.
+              </Grid.Column>
+            </Grid.Row>
+            {previousWager > 0 &&
+              <Grid.Row>
+                <Grid.Column>
+                  <Button
+                    loading={loading}
+                    color="red"
+                    onClick={this._removeWager}
+                  >
+                    Remove Wager
+                  </Button>
+                </Grid.Column>
+              </Grid.Row>
+            }
+          </Grid>
+        </Message.Content>
       </Message>
     );
   };

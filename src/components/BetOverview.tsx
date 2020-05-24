@@ -34,6 +34,20 @@ export default class extends Component<Props, State> {
     return typeof this.props.bet === "number" ? null : this.props.bet;
   }
 
+  _getPreviousWager = (): number | undefined => {
+    const { me } = this.props;
+    if (!me) {
+      return;
+    }
+    const { wagers } = this.state;
+    const wager = wagers.find(e => e.user_id === me.id);
+    if (wager) {
+      return wager.amount;
+    } else {
+      return;
+    }
+  }
+
   _loadBetData = () => {
     Promise.all([this._loadBet(), this._loadWagers()])
       .then(() => this.setState({ loading: false }))
@@ -135,10 +149,11 @@ export default class extends Component<Props, State> {
             <Table.Body>
               {wagers
                 .map(wager => {
+                  const validWager = wager.amount > 0 && !wager.amended;
                   return (
                     <Table.Row
-                      positive={!wager.amended}
-                      negative={wager.amended}
+                      positive={validWager}
+                      negative={!validWager}
                     >
                       <Table.Cell>
                         <Header as='h4' image>
@@ -157,10 +172,12 @@ export default class extends Component<Props, State> {
                           </Header.Content>
                         </Header>
                       </Table.Cell>
-                      <Table.Cell>{wager.amount}</Table.Cell>
-                      <Table.Cell>{wager.time_placed}</Table.Cell>
+                      <Table.Cell>{wager.amount || "Removed Wager"}</Table.Cell>
+                      <Table.Cell>
+                        {wager.time_placed}
+                      </Table.Cell>
                     </Table.Row>
-                  )
+                  );
                 })}
             </Table.Body>
           </Table>
@@ -170,7 +187,14 @@ export default class extends Component<Props, State> {
             <Message.Header>There are currently no active wagers</Message.Header>
           </Message>
         }
-        {bet && <MakeWager bet={bet} me={me} groupId={bet.group_id} />}
+        {me && bet &&
+          <MakeWager
+            bet={bet}
+            me={me}
+            groupId={bet.group_id}
+            previousWager={this._getPreviousWager()}
+          />
+        }
       </Segment>
     );
   }

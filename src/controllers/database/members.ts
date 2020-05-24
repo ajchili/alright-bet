@@ -105,3 +105,29 @@ export const isUserInGroup = async (
     );
   });
 };
+
+export const update = async (member: Member): Promise<Member> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "UPDATE members SET id = $1, user_id = $2, group_id = $3, role_id = $4, currency = $5 WHERE id = $1 RETURNING *",
+      [
+        member.id,
+        member.user_id,
+        member.group_id,
+        member.role_id,
+        member.currency,
+      ],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          reject(new Error("Member does not exist!"));
+        } else {
+          resolve(result.rows[0] as Member);
+        }
+      }
+    );
+  });
+};
