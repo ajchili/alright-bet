@@ -4,6 +4,7 @@ import fs from "fs";
 import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
 import * as Members from "../../controllers/members";
+import * as Users from "../../controllers/users";
 import * as Wagers from "../../controllers/wagers";
 
 const router = Router();
@@ -167,7 +168,7 @@ router.post("/:id/complete", async (req: Request, res: Response) => {
   const { winner_id = "" } = req.fields;
   const { proof } = req.files;
   let proofURL: string;
-  if (winner_id.length === 0) {
+  if (typeof winner_id !== "string" || winner_id.length === 0) {
     res.status(400).send();
     return;
   }
@@ -184,7 +185,8 @@ router.post("/:id/complete", async (req: Request, res: Response) => {
       });
       proofURL = `data:${proof.type};base64,${bitmapAsBase64}`;
     }
-    await Bets.complete(bet, user, proofURL);
+    const winner = await Users.find(winner_id);
+    await Bets.complete(bet, winner, proofURL);
     res.status(200).json({ proofURL, redirect: `/bets/${bet.id}` });
   } catch (err) {
     console.error(err);

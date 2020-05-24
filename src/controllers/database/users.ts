@@ -20,7 +20,7 @@ export const create = async (user: DiscordUser): Promise<QueryResult> => {
   });
 };
 
-export const get = async (id: string): Promise<User> => {
+export const find = async (id: string): Promise<User> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
