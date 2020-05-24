@@ -58,12 +58,7 @@ router.get("/:id/wagers", async (req: Request, res: Response) => {
   try {
     const betId = parseInt(id, 10);
     const bet = await Bets.find(betId);
-    let wagers = await Wagers.getForBet(bet);
-    wagers = wagers.sort((a: DetailedWager, b: DetailedWager): number => {
-      const aTime = new Date(a.time_placed).getTime();
-      const bTime = new Date(b.time_placed).getTime();
-      return bTime - aTime;
-    });
+    const wagers = await Wagers.getForBet(bet);
     const betters = new Set();
     wagers.forEach((wager) => {
       if (betters.has(wager.user_id)) {

@@ -29,7 +29,7 @@ export const getForBet = async (bet: Bet): Promise<DetailedWager[]> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
-      "SELECT wagers.id, wagers.user_id, wagers.amount, wagers.time_placed, users.username, users.discriminator, users.avatar FROM wagers JOIN users ON wagers.user_id = users.id WHERE bet_id = $1",
+      "SELECT wagers.id, wagers.user_id, wagers.amount, wagers.time_placed, users.username, users.discriminator, users.avatar FROM wagers JOIN users ON wagers.user_id = users.id WHERE bet_id = $1 ORDER BY time_placed DESC",
       [bet.id],
       (err: Error, result: QueryResult) => {
         client.release(true);
