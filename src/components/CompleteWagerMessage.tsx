@@ -13,10 +13,10 @@ interface Props {
   bet: Bet;
   betters: User[];
   onCancel?: () => void;
-  onSubmit?: () => void;
 }
 
 interface State {
+  loading: boolean;
   selectedBetter?: string;
   proof?: File;
 }
@@ -24,18 +24,18 @@ interface State {
 export default class extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false
+    };
   }
 
   _submit = () => {
-    const {
-      bet,
-      onSubmit = () => console.warn("[CompleteWagerMessage] onSubmit is not implemented!")
-    } = this.props;
+    const { bet } = this.props;
     const { selectedBetter, proof } = this.state;
     if (selectedBetter === undefined) {
       return;
     }
+    this.setState({ loading: true });
     const body = new FormData();
     body.append("winner_id", selectedBetter);
     if (proof !== undefined) {
@@ -46,7 +46,10 @@ export default class extends Component<Props, State> {
       body
     })
       .then(response => response.json())
-      .then(console.log)
+      .then(json => {
+        const { redirect = "/" } = json;
+        window.location.href = redirect;
+      })
       .catch(console.error);
   };
 
@@ -55,7 +58,7 @@ export default class extends Component<Props, State> {
       betters,
       onCancel = () => console.warn("[CompleteWagerMessage] onCancel is not implemented!")
     } = this.props;
-    const { selectedBetter } = this.state;
+    const { loading, selectedBetter } = this.state;
 
     return (
       <Message>
@@ -76,6 +79,7 @@ export default class extends Component<Props, State> {
                   placeholder="Select Winner"
                   fluid
                   selection
+                  disabled={loading}
                   value={selectedBetter}
                   onChange={(_, { value }) => {
                     const newSelectedBetter = typeof value === "string" ? value : undefined;
@@ -103,6 +107,7 @@ export default class extends Component<Props, State> {
                     <Input
                       type="file"
                       accept="image/*"
+                      disabled={loading}
                       onChange={(e) => {
                         if (e.target.files === null) {
                           return;
@@ -120,12 +125,19 @@ export default class extends Component<Props, State> {
                 <Button.Group>
                   <Button
                     color="green"
+                    loading={loading}
                     disabled={selectedBetter === undefined}
                     onClick={this._submit}
                   >
                     Complete
                   </Button>
-                  <Button color="red" onClick={onCancel}>Cancel</Button>
+                  <Button
+                    color="red"
+                    loading={loading}
+                    onClick={onCancel}
+                  >
+                    Cancel
+                  </Button>
                 </Button.Group>
               </Grid.Column>
             </Grid.Row>

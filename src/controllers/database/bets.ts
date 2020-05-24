@@ -35,7 +35,7 @@ export const complete = async (
   return new Promise((resolve, reject) => {
     client.query(
       "UPDATE bets SET winner_id = $2, proof = $3 WHERE id = $1",
-      [bet.id, winner.id, proof || "NULL"],
+      [bet.id, winner.id, proof || null],
       (err: Error, result: QueryResult) => {
         client.release(true);
         if (err) {
@@ -77,7 +77,7 @@ export const getActiveForGroup = async (
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
-      "SELECT bets.id, bets.name, bets.description, users.id AS creator, users.username, users.discriminator, users.avatar FROM bets JOIN users ON bets.creator_id = users.id WHERE bets.group_id = $1 AND bets.proof IS NULL",
+      "SELECT bets.id, bets.name, bets.description, users.id AS creator, users.username, users.discriminator, users.avatar FROM bets JOIN users ON bets.creator_id = users.id WHERE bets.group_id = $1 AND bets.winner_id IS NULL",
       [groupID],
       (err: Error, result: QueryResult) => {
         client.release(true);
