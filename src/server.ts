@@ -14,7 +14,7 @@ import AuthenticationMiddleware from "./middleware/authentication";
 import { seed } from "./controllers/database";
 
 const app: Express = express();
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(

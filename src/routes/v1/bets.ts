@@ -1,4 +1,6 @@
 import { Router, Request, Response } from "express";
+import formidable from "express-formidable";
+import fs from "fs";
 import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
 import * as Members from "../../controllers/members";
@@ -144,6 +146,50 @@ router.delete("/:id/wagers", async (req: Request, res: Response) => {
       case "Bet does not exist!":
       case "Group does not exist!":
       case "Member does not exist!":
+        res.status(404).send();
+        break;
+      default:
+        res.status(500).send();
+        break;
+    }
+  }
+});
+
+router.use(formidable());
+
+router.post("/:id/complete", async (req: Request, res: Response) => {
+  const { user } = req.cookies;
+  if (!user) {
+    res.status(401).redirect("/");
+    return;
+  }
+  const { id } = req.params;
+  const { winner_id = "" } = req.fields;
+  const { proof } = req.files;
+  let proofURL: string;
+  if (winner_id.length === 0) {
+    res.status(400).send();
+    return;
+  }
+  try {
+    const betId = parseInt(id, 10);
+    const bet = await Bets.find(betId);
+    if (bet.creator_id !== user.id) {
+      res.status(401).redirect("/");
+      return;
+    }
+    if (proof !== undefined) {
+      const bitmapAsBase64 = fs.readFileSync(proof.path, {
+        encoding: "base64",
+      });
+      proofURL = `data:${proof.type};base64,${bitmapAsBase64}`;
+    }
+    await Bets.complete(bet, user, proofURL);
+    res.status(200).json({ proofURL, redirect: `/bets/${bet.id}` });
+  } catch (err) {
+    console.error(err);
+    switch (err.message) {
+      case "Bet does not exist!":
         res.status(404).send();
         break;
       default:

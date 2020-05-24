@@ -7,15 +7,21 @@ export const create = async (
   name: string,
   description: string = ""
 ): Promise<Bet> => {
-  return await bets.create(user, group.id, name, description);
+  return await bets.create(user, group, name, description);
+};
+
+export const complete = async (
+  bet: Bet,
+  winner: User,
+  proof?: string
+): Promise<void> => {
+  return await bets.complete(bet, winner, proof);
 };
 
 export const find = async (id: number): Promise<Bet> => {
   return await bets.find(id);
 };
 
-export const getForGroup = async (
-  group: Group
-): Promise<ActiveBet[]> => {
+export const getForGroup = async (group: Group): Promise<ActiveBet[]> => {
   return await bets.getActiveForGroup(group.id);
 };

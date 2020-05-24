@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { Button, Header, Message, Popup, Segment } from "semantic-ui-react";
+import {
+  Button,
+  Grid,
+  Header,
+  Message,
+  Popup,
+  Segment
+} from "semantic-ui-react";
 import { Bet, DetailedWager, User } from "../lib/v1";
 import BetWagersTable from "./BetWagersTable";
+import CompleteWagerMessage from "./CompleteWagerMessage";
 import MakeWager from "./MakeWager";
 
 interface Props {
@@ -12,6 +20,7 @@ interface Props {
 interface State {
   bet: Bet | null;
   loading: boolean;
+  showCompleteDialog: boolean;
   wagers: DetailedWager[];
 }
 
@@ -21,6 +30,7 @@ export default class extends Component<Props, State> {
     this.state = {
       loading: true,
       bet: this._getBet(),
+      showCompleteDialog: false,
       wagers: []
     };
   }
@@ -32,7 +42,8 @@ export default class extends Component<Props, State> {
   }
 
   _getBet = (): Bet | null => {
-    return typeof this.props.bet === "number" ? null : this.props.bet;
+    const { bet = this.state.bet } = this.props;
+    return typeof bet === "number" ? null : bet;
   }
 
   _getPreviousWager = (): number | undefined => {
@@ -100,41 +111,51 @@ export default class extends Component<Props, State> {
     const {
       bet = this._getBet(),
       loading,
+      showCompleteDialog,
       wagers
     } = this.state;
+
+    const isBetCreator = me !== null && bet !== null && me.id === bet.creator_id;
 
     return (
       <Segment loading={loading}>
         {bet ? (
           <div>
-            <Header as="h1">
-              {bet.name}
-            </Header>
-            {bet.description &&
-              <p>
-                {bet.description}
-              </p>
-            }
+            <Header as="h1">{bet.name}</Header>
+            {bet.description && <p>{bet.description}</p>}
             <Button.Group>
               <Popup
                 content={"Click to copy the link to this bet to your clipboard."}
                 trigger={<Button onClick={this._shareBet}>Share</Button>}
               />
-              {me !== null && me.id === bet.creator_id &&
-                <Button color="green">
+              {isBetCreator && !showCompleteDialog &&
+                <Button
+                  color="green"
+                  onClick={() => this.setState({ showCompleteDialog: true })}
+                >
                   Mark as Completed
                 </Button>
               }
             </Button.Group>
+            {isBetCreator && showCompleteDialog &&
+              <CompleteWagerMessage
+                bet={bet}
+                betters={wagers.map(wager => {
+                  return {
+                    id: wager.user_id,
+                    username: wager.username,
+                    discriminator: wager.discriminator,
+                    avatar: wager.avatar
+                  };
+                })}
+                onCancel={() => this.setState({ showCompleteDialog: false })}
+              />
+            }
           </div>
         ) : (
             <div>
-              <Header as="h1">
-                Loading bet...
-              </Header>
-              <p>
-                Loading bet...
-              </p>
+              <Header as="h1">Loading bet...</Header>
+              <p>Loading bet...</p>
             </div>
           )}
         <Header>Wagers</Header>

@@ -4,7 +4,7 @@ import { getClient } from "./utils";
 
 export const create = async (
   user: User,
-  groupID: number,
+  group: Group,
   name: string,
   description: string
 ): Promise<Bet> => {
@@ -12,7 +12,7 @@ export const create = async (
   return new Promise((resolve, reject) => {
     client.query(
       "INSERT INTO bets(creator_id, group_id, name, description) VALUES($1, $2, $3, $4) RETURNING *",
-      [user.id, groupID, name, description],
+      [user.id, group.id, name, description],
       (err: Error, result: QueryResult) => {
         client.release(true);
         if (err) {
@@ -20,6 +20,30 @@ export const create = async (
         } else {
           const bet = result.rows[0] as Bet;
           resolve(bet);
+        }
+      }
+    );
+  });
+};
+
+export const complete = async (
+  bet: Bet,
+  winner: User,
+  proof?: string
+): Promise<void> => {
+  const client = await getClient();
+  return new Promise((resolve, reject) => {
+    client.query(
+      "UPDATE bets SET winner_id = $2, proof = $3 WHERE id = $1",
+      [bet.id, winner.id, proof || "NULL"],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          reject(new Error("Bet does not exist!"));
+        } else {
+          resolve();
         }
       }
     );
