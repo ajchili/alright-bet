@@ -93,7 +93,7 @@ router.post("/:id/leave", async (req: Request, res: Response) => {
     const groupId = parseInt(id, 10);
     const group = await Groups.find(groupId);
     await Groups.leave(user, group);
-    res.status(200).redirect("/");
+    res.status(200).json({ redirect: "/" });
   } catch (err) {
     switch (err.message) {
       case "Group does not exist!":
