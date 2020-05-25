@@ -3,6 +3,8 @@
 Alright Bet is a web application that allows friends to make bets against one
 another in a friendly and competitive environment with fake currency, marbles.
 
+You can view and use the website [here](https://kirinpatel-alright-bet.herokuapp.com/).
+
 ## Technologies Used
 
 - [yarn](https://yarnpkg.com/)
@@ -15,6 +17,7 @@ another in a friendly and competitive environment with fake currency, marbles.
 - [PostgreSQL](https://www.postgresql.org/)
 - [Semantic UI (for React)](https://react.semantic-ui.com/)
 - [Heroku](https://www.heroku.com/)
+- [Discord OAuth2 & Bot](https://discord.com/developers)
 
 ## Running locally
 
@@ -28,5 +31,6 @@ another in a friendly and competitive environment with fake currency, marbles.
 7. Run `yarn dev:server` in the root directory
 8. Open another terminal and run `yarn dev:server` in the root directory of the project
 9. Open [http://localhost](http://localhost) in your browser of choice
+    - Please note that the application runs on port **80**
 10. Develop!
     - The server and webpack instances watch for file changes and re-build or restart when changes are detected
