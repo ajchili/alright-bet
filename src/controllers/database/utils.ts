@@ -11,6 +11,10 @@ const pool = new Pool({
   },
 });
 
+export const getPool = (): Pool => {
+  return pool;
+};
+
 export const getClient = async (): Promise<PoolClient> => {
   const client = await pool.connect();
   return client;
