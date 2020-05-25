@@ -1,20 +1,55 @@
+import fs from "fs";
+import path from "path";
 import { Table } from "../../lib/v1";
-import { createTable } from "./utils";
+import { getClient, createTable } from "./utils";
+import { QueryResult } from "pg";
+
+const createTableAndThrowUnknownErr = async (table: Table) => {
+  try {
+    await createTable(table);
+  } catch (err) {
+    switch (err.code) {
+      // "relation already exists" error, ignore if caught
+      case "42P07":
+        break;
+      default:
+        throw err;
+    }
+  }
+};
+
+const createSessionsTableAndThrowUnknownErr = async () => {
+  const sessionsTableSQLPath = path.resolve(
+    "./node_modules/connect-pg-simple/table.sql"
+  );
+  const sessionsTableSQL = fs.readFileSync(sessionsTableSQLPath, {
+    encoding: "utf8",
+  });
+  try {
+    const client = await getClient();
+    await new Promise((resolve, reject) => {
+      client.query(sessionsTableSQL, (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  } catch (err) {
+    switch (err.code) {
+      // "relation already exists" error, ignore if caught
+      case "42P07":
+        break;
+      default:
+        throw err;
+    }
+  }
+};
 
 export default async (): Promise<void> => {
-  const createTableAndThrowUnknownErr = async (table: Table) => {
-    try {
-      await createTable(table);
-    } catch (err) {
-      switch (err.code) {
-        // "relation already exists" error, ignore if caught
-        case "42P07":
-          break;
-        default:
-          throw err;
-      }
-    }
-  };
+  await createSessionsTableAndThrowUnknownErr();
   await createTableAndThrowUnknownErr({
     name: "users",
     rows: [
