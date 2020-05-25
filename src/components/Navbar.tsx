@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Image, Menu } from "semantic-ui-react";
+import { Icon, Image, Menu } from "semantic-ui-react";
 import { User } from "../lib/v1";
 
 interface Props {
@@ -24,10 +24,23 @@ export default class extends Component<Props> {
           <Menu.Item>
             <Link to="/">
               Home
-          </Link>
+            </Link>
           </Menu.Item>
         }
+        <Menu.Item>
+          <a
+            href="https://github.com/ajchili/alright-bet/issues/new/choose"
+            target="_blank"
+          >
+            Report bug or Request Feature
+          </a>
+        </Menu.Item>
         <Menu.Menu position='right'>
+          <Menu.Item>
+            <a href="https://github.com/ajchili/alright-bet/" target="_blank">
+              <Icon name="github" />
+            </a>
+          </Menu.Item>
           <Menu.Item>
             {me ? (
               <a href="/api/v1/authentication/logout">
