@@ -12,6 +12,7 @@ import BetsRouter from "./routes/v1/bets";
 import GroupsRouter from "./routes/v1/groups";
 import ReactRouter from "./routes/v1/react";
 import AuthenticationMiddleware from "./middleware/authentication";
+import * as Routes from "./routes";
 import { seed, getPool } from "./controllers/database";
 
 seed().then(() => {
@@ -40,6 +41,7 @@ seed().then(() => {
   app.use("/api/v1/authentication", AuthenticationRouter);
   app.use("/api/v1/bets", BetsRouter);
   app.use("/api/v1/groups", GroupsRouter);
+  app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
   app.use("/", ReactRouter);
 
   app.listen(PORT);
