@@ -1,11 +1,7 @@
 import { Router, Request, Response } from "express";
 import formidable from "express-formidable";
 import fs from "fs";
-import * as Bets from "../../controllers/bets";
-import * as Groups from "../../controllers/groups";
-import * as Members from "../../controllers/members";
-import * as Users from "../../controllers/users";
-import * as Wagers from "../../controllers/wagers";
+import{ Bets, Groups, Members, Users, Wagers } from "../../controllers";
 
 const router = Router();
 
