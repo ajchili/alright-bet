@@ -48,5 +48,5 @@ You can view and use the website [here](https://alright.bet/).
 
 ## Sponsors
 
-- @elijahcutler
+- **[@elijahcutler](https://github.com/elijahcutler)**
   - Donated to help aquire the [https://alright.bet](https://alright.bet) url
