@@ -6,7 +6,8 @@ import ReactDOMServer from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
 import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
-import { Bet, Group } from "../../lib/v1";
+import * as Users from "../../controllers/users";
+import { Bet, DetailedUser, Group } from "../../lib/v1";
 import App from "../../App";
 
 const router = Router();
@@ -15,6 +16,7 @@ router.get("*", async (req: Request, res: Response) => {
   const { user } = req.cookies;
   let groups: Group[] = [];
   let bet: Bet;
+  let detailedUserData: DetailedUser;
   try {
     if (user != null) {
       groups = await Groups.getForUser(user);
@@ -25,6 +27,9 @@ router.get("*", async (req: Request, res: Response) => {
       if (!isNaN(betId)) {
         bet = await Bets.find(betId);
       }
+    } else if (req.path.startsWith("/users/")) {
+      const id = req.path.substr(req.path.lastIndexOf("/") + 1);
+      detailedUserData = await Users.getDetailedData(id);
     }
   } catch (err) {
     // Ignore error
@@ -37,6 +42,7 @@ router.get("*", async (req: Request, res: Response) => {
         bet={bet}
         groups={groups}
         me={user}
+        usersPageData={detailedUserData}
       />
     </StaticRouter>
   );

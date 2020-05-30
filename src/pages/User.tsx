@@ -23,7 +23,25 @@ export default class extends Component<Props, State> {
   }
 
   _loadUserData = () => {
-    // TODO: Implement
+    const { id } = this.props;
+    if (id === undefined) {
+      return;
+    }
+    fetch(`/api/v1/users/${id}`)
+      .then(response => {
+        switch (response.status) {
+          case 200:
+            return response.json();
+            break;
+          default:
+            break;
+        }
+      })
+      .then(json => {
+        const data = json as DetailedUser;
+        this.setState({ data });
+      })
+      .catch(console.error);
   };
 
   render(): JSX.Element {
@@ -39,8 +57,8 @@ export default class extends Component<Props, State> {
                 <Header as="h2" image>
                   {data !== undefined && data.avatar !== undefined &&
                     <Image
-                      src={``}
-                      size="mini"
+                      src={`https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`}
+                      size="large"
                       rounded
                     />
                   }
