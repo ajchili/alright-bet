@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Label, Popup, Table } from "semantic-ui-react";
+import { Button, Popup, Table } from "semantic-ui-react";
 import { ActiveBet } from "../lib/v1";
+import UserPill from "./UserPill";
 
 interface Props {
   activeBet: ActiveBet;
@@ -26,14 +27,7 @@ export default class extends Component<Props> {
         </Table.Cell>
         <Table.Cell>
           {activeBet.betters.map(better => {
-            return (
-              <Label key={better.id} as='a' image>
-                {better.avatar &&
-                  <img src={`https://cdn.discordapp.com/avatars/${better.id}/${better.avatar}.png`} />
-                }
-                {better.username}#{better.discriminator}
-              </Label>
-            );
+            return <UserPill key={better.id} user={better} />;
           })}
         </Table.Cell>
         <Table.Cell>{activeBet.wagers}</Table.Cell>
