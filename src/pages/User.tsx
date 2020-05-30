@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Grid, Header, Image, Segment } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import { DetailedUser } from "../lib/v1";
+import UserHeader from "../components/UserPageHeader";
+import UserMarbleChart from "../components/UserPageMarbleChart";
+import UserNoMembershipsHeader from "../components/UserPageNoMembershipsHeader";
 
 interface Props {
   data?: DetailedUser;
@@ -17,7 +20,11 @@ export default class extends Component<Props, State> {
     this.state = {
       data: props.data
     };
-    if (!props.data) {
+  }
+
+  componentDidMount(): void {
+    const { data } = this.props;
+    if (!data) {
       this._loadUserData();
     }
   }
@@ -33,7 +40,7 @@ export default class extends Component<Props, State> {
           case 200:
             return response.json();
           default:
-            break;
+            throw response;
         }
       })
       .then(json => {
@@ -53,21 +60,9 @@ export default class extends Component<Props, State> {
             <Grid.Column width={4} />
             <Grid.Column width={8}>
               <Segment loading={data === undefined}>
-                <Header as="h2" image>
-                  {data !== undefined && data.avatar !== undefined &&
-                    <Image
-                      src={`https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`}
-                      size="large"
-                      rounded
-                    />
-                  }
-                  <Header.Content>
-                    {data === undefined ? "Loading..." : data.username}
-                    <Header.Subheader>
-                      {data === undefined ? "Loading..." : data.discriminator}
-                    </Header.Subheader>
-                  </Header.Content>
-                </Header>
+                <UserHeader data={data} />
+                <UserMarbleChart data={data} />
+                <UserNoMembershipsHeader data={data} />
               </Segment>
             </Grid.Column>
           </Grid.Row>

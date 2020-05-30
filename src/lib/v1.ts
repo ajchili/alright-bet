@@ -1,5 +1,18 @@
 export const constants = {
   DEFAULT_CURRENCY_AMOUNT: 10,
+  COLORS: [
+    "#db2828", // RED
+    "#fbbd08", // YELLOW
+    "#21ba45", // GREEN
+    "#2185d0", // BLUE
+    "#a333c8", // PURPLE
+    "#f2711c", // ORANGE
+    "#b5cc18", // OLIVE
+    "#00b5ad", // TEAL
+    "#6435c9", // VIOLET
+    "#a5673f", // BROWN
+    "#e03997", // PINK
+  ],
   ROLE_NAMES: ["OWNER", "MEMBER"],
   STIMULUS_CURRENCY_AMOUNT: 10,
 };
