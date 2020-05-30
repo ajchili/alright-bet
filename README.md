@@ -3,7 +3,7 @@
 Alright Bet is a web application that allows friends to make bets against one
 another in a friendly and competitive environment with fake currency, marbles.
 
-You can view and use the website [here](https://kirinpatel-alright-bet.herokuapp.com/).
+You can view and use the website [here](https://alright.bet/).
 
 ## Technologies Used
 
