@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Bets, Groups, Members, Wagers } from "../../controllers";
+import { v1_1 } from "../../lib";
 
 export const create = async (req: Request, res: Response) => {
   const { user } = req.cookies;
@@ -17,17 +18,17 @@ export const create = async (req: Request, res: Response) => {
     const bet = await Bets.find(parseInt(betId, 10));
     const group = await Groups.find(bet.group_id);
     const member = await Members.find(user, group);
-    const previousWager = await Wagers.v1_1.getMostRecentForMemberInBet(
+    const previousWagerAmount = await Wagers.v1_1.getMostRecentAmountForMemberInBet(
       member,
       bet
     );
-    const maxWagerAmount = previousWager.amount + wagerAmount;
+    const maxWagerAmount = previousWagerAmount + wagerAmount;
     if (wagerAmount < 1 || wagerAmount > maxWagerAmount) {
       res.status(400).send();
       return;
     }
     await Wagers.v1_1.create(bet, member, wagerAmount, details);
-    member.currency = member.currency + previousWager.amount - wagerAmount;
+    member.currency = member.currency + previousWagerAmount - wagerAmount;
     await Members.update(member);
     res.status(200).json({ redirect: `/bets/${bet.id}` });
   } catch (err) {

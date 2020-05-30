@@ -29,21 +29,45 @@ export const create = async (
   });
 };
 
-export const getAllForBet = async (bet: v1.Bet): Promise<v1_1.Wager[]> => {
+export const getAllForBet = async (
+  bet: v1.Bet
+): Promise<v1_1.DetailedWager[]> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
-    client.release(true);
-    reject("TODO: IMPLEMENT");
+    client.query(
+      "SELECT wagers.id, wagers.user_id, wagers.amount, wagers.details, wagers.time_placed, users.username, users.discriminator, users.avatar FROM wagers JOIN users ON wagers.user_id = users.id WHERE bet_id = $1 ORDER BY time_placed DESC",
+      [bet.id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        }
+        const wagers = result.rows as v1_1.DetailedWager[];
+        resolve(wagers);
+      }
+    );
   });
 };
 
-export const getMostRecentForMemberInBet = async (
+export const getMostRecentAmountForMemberInBet = async (
   member: v1.Member,
   bet: v1.Bet
-): Promise<v1_1.Wager> => {
+): Promise<number> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
-    client.release(true);
-    reject("TODO: IMPLEMENT");
+    client.query(
+      "SELECT wagers.amount FROM wagers JOIN users ON wagers.user_id = $2 WHERE bet_id = $1 ORDER BY time_placed DESC",
+      [bet.id, member.user_id],
+      (err: Error, result: QueryResult) => {
+        client.release(true);
+        if (err) {
+          reject(err);
+        } else if (result.rowCount === 0) {
+          resolve(0);
+        }
+        const { amount = 0 } = result.rows[0] as v1_1.Wager;
+        resolve(amount);
+      }
+    );
   });
 };
