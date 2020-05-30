@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { constants, Role } from "../../lib/v1";
+import { Role } from "../../lib/v1";
 import { getClient } from "./utils";
 
 const create = async (name: string): Promise<QueryResult> => {
@@ -71,12 +71,4 @@ export const getAll = async (): Promise<Role[]> => {
       }
     });
   });
-};
-
-export const seed = async () => {
-  const existingRoles = await getAll();
-  const neededRoles = constants.ROLE_NAMES.filter((roleName) => {
-    return !existingRoles.find((role) => role.name.toUpperCase() === roleName);
-  });
-  await Promise.all(neededRoles.map(create));
 };
