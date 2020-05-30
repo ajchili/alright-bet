@@ -56,7 +56,7 @@ router.get("/:id/wagers", async (req: Request, res: Response) => {
   try {
     const betId = parseInt(id, 10);
     const bet = await Bets.find(betId);
-    const wagers = await Wagers.getForBet(bet);
+    const wagers = await Wagers.v1.getForBet(bet);
     const betters = new Set();
     wagers.forEach((wager) => {
       if (betters.has(wager.user_id)) {
@@ -97,13 +97,13 @@ router.post("/:id/wagers/create", async (req: Request, res: Response) => {
     const bet = await Bets.find(betId);
     const group = await Groups.find(bet.group_id);
     const member = await Members.find(user, group);
-    const previousWager = await Wagers.getMostRecentWagerForBet(member, bet);
+    const previousWager = await Wagers.v1.getMostRecentWagerForBet(member, bet);
     const maxWager = previousWager + wager;
     if (wager < 1 || wager > maxWager) {
       res.status(400).send();
       return;
     }
-    await Wagers.create(member, bet, wager);
+    await Wagers.v1.create(member, bet, wager);
     member.currency = member.currency + previousWager - wager;
     await Members.update(member);
     res.status(200).json({ redirect: `/bets/${bet.id}` });
@@ -133,8 +133,8 @@ router.delete("/:id/wagers", async (req: Request, res: Response) => {
     const bet = await Bets.find(betId);
     const group = await Groups.find(bet.group_id);
     const member = await Members.find(user, group);
-    const previousWager = await Wagers.getMostRecentWagerForBet(member, bet);
-    await Wagers.create(member, bet, 0);
+    const previousWager = await Wagers.v1.getMostRecentWagerForBet(member, bet);
+    await Wagers.v1.create(member, bet, 0);
     member.currency = member.currency + previousWager;
     await Members.update(member);
     res.status(200).json({ redirect: `/bets/${bet.id}` });

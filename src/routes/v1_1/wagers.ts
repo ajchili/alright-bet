@@ -17,18 +17,17 @@ export const create = async (req: Request, res: Response) => {
     const bet = await Bets.find(parseInt(betId, 10));
     const group = await Groups.find(bet.group_id);
     const member = await Members.find(user, group);
-    const previousWagerAmount = await Wagers.getMostRecentWagerForBet(
+    const previousWager = await Wagers.v1_1.getMostRecentForMemberInBet(
       member,
       bet
     );
-    const maxWagerAmount = previousWagerAmount + wagerAmount;
+    const maxWagerAmount = previousWager.amount + wagerAmount;
     if (wagerAmount < 1 || wagerAmount > maxWagerAmount) {
       res.status(400).send();
       return;
     }
-    // TODO: save wager details
-    await Wagers.create(member, bet, wagerAmount);
-    member.currency = member.currency + previousWagerAmount - wagerAmount;
+    await Wagers.v1_1.create(bet, member, wagerAmount, details);
+    member.currency = member.currency + previousWager.amount - wagerAmount;
     await Members.update(member);
     res.status(200).json({ redirect: `/bets/${bet.id}` });
   } catch (err) {

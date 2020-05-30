@@ -1,5 +1,5 @@
-import { Bet, DetailedWager, Member, Wager } from "../lib/v1";
-import { wagers } from "./database";
+import { Bet, DetailedWager, Member, Wager } from "../../lib/v1";
+import { wagers } from "../database";
 
 export const create = async (
   member: Member,
