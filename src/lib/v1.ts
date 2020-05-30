@@ -41,6 +41,10 @@ export interface DetailedWager {
   amended?: boolean;
 }
 
+export interface DetailedUser extends User {
+  memberships: Member[];
+}
+
 export interface Group {
   id: number;
   name: string;
