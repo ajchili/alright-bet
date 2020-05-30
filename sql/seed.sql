@@ -43,3 +43,8 @@ CREATE TABLE wagers (
   amount INTEGER,
   time_placed TIMESTAMP
 );
+
+-- v1.1
+-- Allow wagers to have a details field
+
+ALTER TABLE IF EXISTS wagers ADD details TEXT;
