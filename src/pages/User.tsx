@@ -32,7 +32,6 @@ export default class extends Component<Props, State> {
         switch (response.status) {
           case 200:
             return response.json();
-            break;
           default:
             break;
         }
