@@ -15,9 +15,12 @@ export default class extends Component<Props> {
       <Menu>
         {me && me.avatar !== null &&
           <Menu.Item>
-            <Image
-              src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png`}
-              avatar />
+            <Link to={`/users/${me.id}`}>
+              <Image
+                src={`https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png`}
+                avatar
+              />
+            </Link>
           </Menu.Item>
         }
         {me &&
