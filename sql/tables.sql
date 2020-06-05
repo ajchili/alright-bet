@@ -40,3 +40,9 @@ CREATE TABLE wagers (
   amount INTEGER NOT NULL,
   time_placed TIMESTAMP NOT NULL
 );
+
+CREATE TABLE winners (
+  id SERIAL PRIMARY KEY UNIQUE,
+  bet_id INTEGER NOT NULL REFERENCES bets(id),
+  wager_id INTEGER NOT NULL REFERENCES wagers(id)
+);
