@@ -2,24 +2,6 @@ import { QueryResult } from "pg";
 import { constants, Role } from "../../lib/v1";
 import { getClient } from "./utils";
 
-const create = async (name: string): Promise<QueryResult> => {
-  const client = await getClient();
-  return new Promise((resolve, reject) => {
-    client.query(
-      "INSERT INTO roles(name) VALUES($1) RETURNING *",
-      [name],
-      (err: Error, result: QueryResult) => {
-        client.release(true);
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      }
-    );
-  });
-};
-
 export const get = async (id: number): Promise<Role> => {
   const client = await getClient();
   return new Promise((resolve, reject) => {
@@ -71,12 +53,4 @@ export const getAll = async (): Promise<Role[]> => {
       }
     });
   });
-};
-
-export const seed = async () => {
-  const existingRoles = await getAll();
-  const neededRoles = constants.ROLE_NAMES.filter((roleName) => {
-    return !existingRoles.find((role) => role.name.toUpperCase() === roleName);
-  });
-  await Promise.all(neededRoles.map(create));
 };
