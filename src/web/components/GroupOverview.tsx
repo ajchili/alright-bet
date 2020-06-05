@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Header, Message, Popup, Segment } from "semantic-ui-react";
-import { ActiveBet, DetailedWager, Group, GroupMember, User } from "../lib/v1";
+import { ActiveBet, DetailedWager, Group, GroupMember, User } from "../../lib/v1";
 import ActiveBetsTable from "./ActiveBetsTable";
 
 interface Props {

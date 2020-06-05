@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Grid, Segment } from "semantic-ui-react";
 import { DetailedUser } from "../../lib/v1";
-import UserHeader from "../../components/UserPageHeader";
-import UserMarbleChart from "../../components/UserPageMarbleChart";
-import UserNoMembershipsHeader from "../../components/UserPageNoMembershipsHeader";
+import UserHeader from "../components/UserPageHeader";
+import UserMarbleChart from "../components/UserPageMarbleChart";
+import UserNoMembershipsHeader from "../components/UserPageNoMembershipsHeader";
 
 interface Props {
   data?: DetailedUser;

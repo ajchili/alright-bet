@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Header, Image, Label, Popup } from "semantic-ui-react";
-import { DetailedUser, DiscordUser, User } from "../lib/v1";
+import { DetailedUser, DiscordUser, User } from "../../lib/v1";
 
 interface Props {
   size?: "small" | "regular";

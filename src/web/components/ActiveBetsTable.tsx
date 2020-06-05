@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table } from "semantic-ui-react";
-import { ActiveBet } from "../lib/v1";
+import { ActiveBet } from "../../lib/v1";
 import ActiveBetsTableRow from "./ActiveBetsTableRow";
 
 interface Props {

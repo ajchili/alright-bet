@@ -8,7 +8,7 @@ import {
   Popup,
   Segment
 } from "semantic-ui-react";
-import { Bet, DetailedWager, User } from "../lib/v1";
+import { Bet, DetailedWager, User } from "../../lib/v1";
 import BetWagersTable from "./BetWagersTable";
 import CompleteWagerMessage from "./CompleteWagerMessage";
 import MakeWager from "./MakeWager";

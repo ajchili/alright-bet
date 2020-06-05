@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Image, Menu } from "semantic-ui-react";
-import { User } from "../lib/v1";
+import { User } from "../../lib/v1";
 
 interface Props {
   me: User | null;
