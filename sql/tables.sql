@@ -46,3 +46,5 @@ CREATE TABLE winners (
   bet_id INTEGER NOT NULL REFERENCES bets(id),
   wager_id INTEGER NOT NULL REFERENCES wagers(id)
 );
+
+ALTER TABLE wagers ADD details TEXT;
