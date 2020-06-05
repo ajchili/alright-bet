@@ -3,6 +3,7 @@ const path = require("path");
 
 module.exports = {
   mode: "production",
+  entry: "./src/web",
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
   resolve: {
