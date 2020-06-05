@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Input, Grid, Message } from "semantic-ui-react";
-import { Bet, Member, User } from "../lib/v1";
+import { Bet, Member, User } from "../../lib/v1";
 
 interface Props {
   bet: Bet;

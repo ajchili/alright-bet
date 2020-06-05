@@ -7,7 +7,7 @@ import {
   Message,
   Popup
 } from "semantic-ui-react";
-import { Bet, User } from "../lib/v1";
+import { Bet, User } from "../../lib/v1";
 
 interface Props {
   bet: Bet;

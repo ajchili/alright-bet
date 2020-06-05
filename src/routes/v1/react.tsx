@@ -8,7 +8,7 @@ import * as Bets from "../../controllers/bets";
 import * as Groups from "../../controllers/groups";
 import * as Users from "../../controllers/users";
 import { Bet, DetailedUser, Group } from "../../lib/v1";
-import App from "../../App";
+import App from "../../web/App";
 
 const router = Router();
 

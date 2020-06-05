@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Grid } from "semantic-ui-react";
 import { Bet, User } from "../../lib/v1";
-import BetOverview from "../../components/BetOverview";
+import BetOverview from "../components/BetOverview";
 
 interface Props {
   me: User | null;
