@@ -29,6 +29,10 @@ export default class extends Component<Props, State> {
     }
   }
 
+  componentWillReceiveProps(): void {
+    this.setState({ data: undefined }, this._loadUserData);
+  }
+
   _loadUserData = () => {
     const { id } = this.props;
     if (id === undefined) {
