@@ -51,7 +51,7 @@ export const getMostRecentWagerForBet = async (
   const client = await getClient();
   return new Promise((resolve, reject) => {
     client.query(
-      "SELECT wagers.amount FROM wagers JOIN users ON wagers.user_id = $1 WHERE bet_id = $2 ORDER BY time_placed DESC",
+      "SELECT wagers.amount FROM wagers JOIN users ON wagers.user_id = $1 WHERE bet_id = $2 ORDER BY time_placed DESC LIMIT 1",
       [member.user_id, bet.id],
       (err: Error, result: QueryResult) => {
         client.release(true);
