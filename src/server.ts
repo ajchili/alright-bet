@@ -8,9 +8,6 @@ import { config } from "dotenv";
 // Configure environment variables
 config();
 
-import AuthenticationRouter from "./routes/v1/authentication";
-import GroupsRouter from "./routes/v1/groups";
-import ReactRouter from "./routes/v1/react";
 import AuthenticationMiddleware from "./middleware/authentication";
 import * as Routes from "./routes";
 import { getPool } from "./controllers/database";
@@ -37,19 +34,38 @@ const PORT: string = process.env.PORT || "80";
 
 app.use(AuthenticationMiddleware);
 
-app.use("/api/v1/authentication", AuthenticationRouter);
+// Authentication
+app.get(
+  "/api/v1/authentication/authenticate",
+  Routes.v1.Authentication.authenticate
+);
+app.get("/api/v1/authentication/callback", Routes.v1.Authentication.callback);
+app.get("/api/v1/authentication/logout", Routes.v1.Authentication.logout);
 // Bets
 app.get("/api/v1/bets/:id", Routes.v1.Bets.get);
 app.post("/api/v1/bets", Routes.v1.Bets.create);
 app.post("/api/v1/bets/:id/complete", formidable(), Routes.v1.Bets.complete);
+// Groups
+app.post("/api/v1/groups", Routes.v1.Groups.create);
+app.get("/api/v1/groups/mine", Routes.v1.Users.myGroups);
+app.delete("/api/v1/groups/:id", Routes.v1.Groups.destroy);
+app.get("/api/v1/groups/:id/bets", Routes.v1.Bets.getActiveBetsForGroup);
+app.get("/api/v1/groups/:id/members", Routes.v1.Members.getForGroup);
+app.get("/api/v1/groups/:id/membership", Routes.v1.Members.getMyMemberForGroup);
+app.get("/api/v1/groups/:id/owner", Routes.v1.Users.getGroupOwner);
+app.post("/api/v1/groups/:id/join", Routes.v1.Groups.join);
+app.post("/api/v1/groups/:id/leave", Routes.v1.Groups.leave);
+app.post(
+  "/api/v1/groups/:id/stimulateEconomy",
+  Routes.v1.Groups.stimulateEconomy
+);
+// React SSR
+app.use("/", Routes.v1.React.render);
+// Users
+app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
 // Wagers
 app.delete("/api/v1/bets/:id/wagers", Routes.v1.Wagers.remove);
 app.get("/api/v1/bets/:id/wagers", Routes.v1.Wagers.getForBet);
 app.post("/api/v1/bets/:id/wagers", Routes.v1.Wagers.create);
-app.use("/api/v1/groups", GroupsRouter);
-// Users
-app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
-// React SSR
-app.use("/", Routes.v1.React.render);
 
 app.listen(PORT);

@@ -35,6 +35,6 @@ export const get = async (id: number): Promise<Bet> => {
   return await bets.find(id);
 };
 
-export const getForGroup = async (group: Group): Promise<ActiveBet[]> => {
+export const getActiveForGroup = async (group: Group): Promise<ActiveBet[]> => {
   return await bets.getActiveForGroup(group.id);
 };

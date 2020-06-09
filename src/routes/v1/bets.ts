@@ -48,6 +48,18 @@ export const get = async (req: Request, res: Response) => {
   }
 };
 
+export const getActiveBetsForGroup = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const groupId = parseInt(id, 10);
+    const group = await Groups.get(groupId);
+    const activeBets = await Bets.getActiveForGroup(group);
+    res.status(200).json(activeBets);
+  } catch (err) {
+    handleError(res, err);
+  }
+};
+
 export const complete = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {
