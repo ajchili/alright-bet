@@ -48,6 +48,7 @@ app.get("/api/v1/bets/:id/wagers", Routes.v1.Wagers.getForBet);
 app.post("/api/v1/bets/:id/wagers", Routes.v1.Wagers.create);
 app.use("/api/v1/groups", GroupsRouter);
 app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
-app.use("/", ReactRouter);
+// React SSR
+app.use("/", Routes.v1.React.render);
 
 app.listen(PORT);

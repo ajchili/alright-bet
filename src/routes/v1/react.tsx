@@ -1,18 +1,14 @@
-import { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
-import * as Bets from "../../controllers/bets";
-import * as Groups from "../../controllers/groups";
-import * as Users from "../../controllers/users";
+import { Bets, Groups, Users } from "../../controllers";
 import { Bet, DetailedUser, Group } from "../../lib/v1";
 import App from "../../web/App";
 
-const router = Router();
-
-router.get("*", async (req: Request, res: Response) => {
+export const render = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   let groups: Group[] = [];
   let bet: Bet;
@@ -25,7 +21,7 @@ router.get("*", async (req: Request, res: Response) => {
       const id = req.path.substr(req.path.lastIndexOf("/") + 1);
       const betId = parseInt(id, 10);
       if (!isNaN(betId)) {
-        bet = await Bets.find(betId);
+        bet = await Bets.get(betId);
       }
     } else if (req.path.startsWith("/users/")) {
       const id = req.path.substr(req.path.lastIndexOf("/") + 1);
@@ -68,6 +64,4 @@ router.get("*", async (req: Request, res: Response) => {
       .replace("<div id=\"root\"></div>", `<div id="root">${reactApp}</div>`);
     res.send(html);
   });
-});
-
-export default router;
+};
