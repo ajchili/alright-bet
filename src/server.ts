@@ -47,6 +47,7 @@ app.delete("/api/v1/bets/:id/wagers", Routes.v1.Wagers.remove);
 app.get("/api/v1/bets/:id/wagers", Routes.v1.Wagers.getForBet);
 app.post("/api/v1/bets/:id/wagers", Routes.v1.Wagers.create);
 app.use("/api/v1/groups", GroupsRouter);
+// Users
 app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
 // React SSR
 app.use("/", Routes.v1.React.render);
