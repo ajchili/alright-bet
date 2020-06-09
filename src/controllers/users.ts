@@ -13,7 +13,7 @@ export const findAndUpdateOrCreate = async (user: DiscordUser | User) => {
   }
 };
 
-export const find = async (id: string): Promise<User> => {
+export const get = async (id: string): Promise<User> => {
   return await users.find(id);
 };
 

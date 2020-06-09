@@ -31,7 +31,7 @@ export const complete = async (
   return await bets.complete(bet, winner, proof);
 };
 
-export const find = async (id: number): Promise<Bet> => {
+export const get = async (id: number): Promise<Bet> => {
   return await bets.find(id);
 };
 

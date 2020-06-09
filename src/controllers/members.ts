@@ -3,7 +3,7 @@ import { Group, Member, User } from "../lib/v1";
 import { members } from "./database";
 import { getClient } from "./database/utils";
 
-export const find = async (user: User, group: Group): Promise<Member> => {
+export const get = async (user: User, group: Group): Promise<Member> => {
   return await members.find(user, group);
 };
 
