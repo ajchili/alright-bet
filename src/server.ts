@@ -39,6 +39,10 @@ app.use(AuthenticationMiddleware);
 
 app.use("/api/v1/authentication", AuthenticationRouter);
 app.use("/api/v1/bets", BetsRouter);
+// Wagers
+app.delete("/api/v1/bets/:id/wagers", Routes.v1.Wagers.remove);
+app.get("/api/v1/bets/:id/wagers", Routes.v1.Wagers.getForBet);
+app.post("/api/v1/bets/:id/wagers", Routes.v1.Wagers.create);
 app.use("/api/v1/groups", GroupsRouter);
 app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
 app.use("/", ReactRouter);
