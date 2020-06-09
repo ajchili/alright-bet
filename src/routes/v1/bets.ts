@@ -1,13 +1,22 @@
-import { Router, Request, Response } from "express";
-import formidable from "express-formidable";
+import { Request, Response } from "express";
 import fs from "fs";
-import * as Bets from "../../controllers/bets";
-import * as Groups from "../../controllers/groups";
-import * as Users from "../../controllers/users";
+import { Bets, Groups, Users } from "../../controllers";
 
-const router = Router();
+const handleError = (res: Response, err: Error) => {
+  switch (err.message) {
+    case "Bet does not exist!":
+      res.status(404).send();
+      break;
+    case "Group does not exist!":
+      res.status(404).send();
+      break;
+    default:
+      res.status(500).send();
+      break;
+  }
+};
 
-router.post("/create", async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {
     res.status(401).redirect("/");
@@ -20,42 +29,26 @@ router.post("/create", async (req: Request, res: Response) => {
   }
   try {
     const groupId = parseInt(id, 10);
-    const group = await Groups.find(groupId);
+    const group = await Groups.get(groupId);
     await Bets.create(user, group, name, description);
     res.status(200).send({ redirect: `/?group=${group.id}` });
   } catch (err) {
-    switch (err.message) {
-      case "Group does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
+};
 
-router.get("/:id", async (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
+    const bet = await Bets.get(betId);
     res.status(200).send(bet);
   } catch (err) {
-    switch (err.message) {
-      case "Bet does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
+};
 
-router.use(formidable());
-
-router.post("/:id/complete", async (req: Request, res: Response) => {
+export const complete = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {
     res.status(401).redirect("/");
@@ -71,7 +64,7 @@ router.post("/:id/complete", async (req: Request, res: Response) => {
   }
   try {
     const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
+    const bet = await Bets.get(betId);
     if (bet.creator_id !== user.id) {
       res.status(401).redirect("/");
       return;
@@ -82,20 +75,10 @@ router.post("/:id/complete", async (req: Request, res: Response) => {
       });
       proofURL = `data:${proof.type};base64,${bitmapAsBase64}`;
     }
-    const winner = await Users.find(winner_id);
+    const winner = await Users.get(winner_id);
     await Bets.complete(bet, winner, proofURL);
     res.status(200).json({ proofURL, redirect: `/bets/${bet.id}` });
   } catch (err) {
-    console.error(err);
-    switch (err.message) {
-      case "Bet does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
-
-export default router;
+};
