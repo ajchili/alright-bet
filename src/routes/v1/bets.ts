@@ -31,7 +31,7 @@ export const create = async (req: Request, res: Response) => {
     const groupId = parseInt(id, 10);
     const group = await Groups.get(groupId);
     await Bets.create(user, group, name, description);
-    res.status(200).send({ redirect: `/?group=${group.id}` });
+    res.status(200).json({ redirect: `/?group=${group.id}` });
   } catch (err) {
     handleError(res, err);
   }

@@ -42,8 +42,8 @@ app.get(
 app.get("/api/v1/authentication/callback", Routes.v1.Authentication.callback);
 app.get("/api/v1/authentication/logout", Routes.v1.Authentication.logout);
 // Bets
-app.get("/api/v1/bets/:id", Routes.v1.Bets.get);
 app.post("/api/v1/bets", Routes.v1.Bets.create);
+app.get("/api/v1/bets/:id", Routes.v1.Bets.get);
 app.post("/api/v1/bets/:id/complete", formidable(), Routes.v1.Bets.complete);
 // Groups
 app.post("/api/v1/groups", Routes.v1.Groups.create);

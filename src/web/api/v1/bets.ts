@@ -6,13 +6,13 @@ export const create = (
   description: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    fetch("/api/v1/bets/create", {
+    fetch("/api/v1/bets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        group_id: groupId,
+        groupId,
         name,
         description,
       }),
