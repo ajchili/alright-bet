@@ -59,13 +59,13 @@ app.post(
   "/api/v1/groups/:id/stimulateEconomy",
   Routes.v1.Groups.stimulateEconomy
 );
-// React SSR
-app.use("/", Routes.v1.React.render);
 // Users
 app.get("/api/v1/users/:id", Routes.v1.Users.getDetailedData);
 // Wagers
 app.delete("/api/v1/bets/:id/wagers", Routes.v1.Wagers.remove);
 app.get("/api/v1/bets/:id/wagers", Routes.v1.Wagers.getForBet);
 app.post("/api/v1/bets/:id/wagers", Routes.v1.Wagers.create);
+// React SSR
+app.use("/", Routes.v1.React.render);
 
 app.listen(PORT);
