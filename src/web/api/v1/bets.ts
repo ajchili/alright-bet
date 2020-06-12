@@ -69,10 +69,10 @@ export const getActiveForGroup = (
   groupId: number | string
 ): Promise<ActiveBet[]> => {
   return new Promise((resolve, reject) => {
-    fetch(`/api/v1/groups/${groupId}/bets`)
+    fetch(`/api/v1/groups/${groupId}/bets?active=true`)
       .then((response) => {
         if (response.status !== 200) {
-          reject(response.body);
+          reject(response);
         }
         resolve(response.json());
       })

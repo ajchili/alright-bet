@@ -42,19 +42,24 @@ export const get = async (req: Request, res: Response) => {
   try {
     const betId = parseInt(id, 10);
     const bet = await Bets.get(betId);
-    res.status(200).send(bet);
+    res.status(200).json(bet);
   } catch (err) {
     handleError(res, err);
   }
 };
 
-export const getActiveBetsForGroup = async (req: Request, res: Response) => {
+export const getBetsForGroup = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { active = "false" } = req.query;
   try {
     const groupId = parseInt(id, 10);
     const group = await Groups.get(groupId);
-    const activeBets = await Bets.getActiveForGroup(group);
-    res.status(200).json(activeBets);
+    if (active === "true") {
+      const activeBets = await Bets.getActiveForGroup(group);
+      res.status(200).json(activeBets);
+    } else {
+      res.status(200).json([]);
+    }
   } catch (err) {
     handleError(res, err);
   }

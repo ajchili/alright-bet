@@ -49,7 +49,7 @@ app.post("/api/v1/bets/:id/complete", formidable(), Routes.v1.Bets.complete);
 app.post("/api/v1/groups", Routes.v1.Groups.create);
 app.get("/api/v1/groups/mine", Routes.v1.Users.myGroups);
 app.delete("/api/v1/groups/:id", Routes.v1.Groups.destroy);
-app.get("/api/v1/groups/:id/bets", Routes.v1.Bets.getActiveBetsForGroup);
+app.get("/api/v1/groups/:id/bets", Routes.v1.Bets.getBetsForGroup);
 app.get("/api/v1/groups/:id/members", Routes.v1.Members.getForGroup);
 app.get("/api/v1/groups/:id/membership", Routes.v1.Members.getMyMemberForGroup);
 app.get("/api/v1/groups/:id/owner", Routes.v1.Users.getGroupOwner);
