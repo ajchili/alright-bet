@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Input, Grid, Message } from "semantic-ui-react";
+import { Wagers } from "../api/v1";
 import { Bet, Member, User } from "../../lib/v1";
 
 interface Props {
@@ -68,32 +69,16 @@ export default class extends Component<Props, State> {
     const { bet } = this.props;
     const { wager: amount } = this.state;
     this.setState({ loading: true });
-    fetch(`/api/v1/bets/${bet.id}/wagers/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ amount })
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
+    Wagers.create(bet.id, amount)
+      .then(() => window.location.reload())
       .catch(console.error);
   }
 
   _removeWager = () => {
     const { bet } = this.props;
     this.setState({ loading: true });
-    fetch(`/api/v1/bets/${bet.id}/wagers`, {
-      method: "DELETE",
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
+    Wagers.remove(bet.id)
+      .then(() => window.location.reload())
       .catch(console.error);
   }
 

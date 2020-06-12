@@ -7,6 +7,7 @@ import {
   Message,
   Popup
 } from "semantic-ui-react";
+import { Bets } from "../api/v1";
 import { Bet, User } from "../../lib/v1";
 
 interface Props {
@@ -41,15 +42,8 @@ export default class extends Component<Props, State> {
     if (proof !== undefined) {
       body.append("proof", proof);
     }
-    fetch(`/api/v1/bets/${bet.id}/complete`, {
-      method: "POST",
-      body
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
+    Bets.complete(bet.id, body)
+      .then(() => window.location.reload())
       .catch(console.error);
   };
 
