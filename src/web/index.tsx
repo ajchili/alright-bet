@@ -13,6 +13,7 @@ ReactDOM.hydrate(
         bet={data.bet}
         groups={data.groups}
         me={data.me}
+        usersPageData={data.usersPageData}
       />
     </BrowserRouter>
   </React.StrictMode>,

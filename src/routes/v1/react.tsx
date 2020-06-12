@@ -57,7 +57,8 @@ export const render = async (req: Request, res: Response) => {
         window.__INITIAL__DATA__ = ${JSON.stringify({
         bet,
         groups,
-        me: user
+        me: user,
+        usersPageData: detailedUserData
       })};
       </script>`)
       .replace("<script src=\"main.js\"></script>", "<script src=\"/main.js\"></script>")
