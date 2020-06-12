@@ -82,7 +82,8 @@ export default class extends Component<Props, State> {
       this._loadGroupOwner(),
       this._loadGroupMembers()
     ])
-      .then(() => this.setState({ loading: false }));
+      .then(() => this.setState({ loading: false }))
+      .catch(console.error);
   };
 
   _loadGroupActiveBets = () => {
