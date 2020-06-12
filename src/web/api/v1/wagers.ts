@@ -28,12 +28,11 @@ export const create = (
 export const getForBet = (betId: number | string): Promise<DetailedWager[]> => {
   return new Promise((resolve, reject) => {
     fetch(`/api/v1/bets/${betId}/wagers`)
-      .then((response) => response.json())
       .then((response) => {
         if (response.status !== 200) {
           reject(response.body);
         }
-        resolve(response.json() as Promise<DetailedWager[]>);
+        resolve(response.json());
       })
       .catch(reject);
   });
