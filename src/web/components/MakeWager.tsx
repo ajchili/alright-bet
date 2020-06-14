@@ -35,7 +35,7 @@ export default class extends Component<Props, State> {
 
   _loadMembership = () => {
     const { groupId } = this.props;
-    fetch(`/api/v1/groups/${groupId}/membershipStatus`)
+    fetch(`/api/v1/groups/${groupId}/membership`)
       .then(response => response.json())
       .then(json => {
         this.setState({ membership: json as Member });
