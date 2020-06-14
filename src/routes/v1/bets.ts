@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import fs from "fs";
+import sharp from "sharp";
 import { Bets, Groups, Users } from "../../controllers";
 
 const handleError = (res: Response, err: Error) => {
@@ -87,10 +88,22 @@ export const complete = async (req: Request, res: Response) => {
       return;
     }
     if (proof !== undefined) {
-      const bitmapAsBase64 = fs.readFileSync(proof.path, {
-        encoding: "base64",
+      const imageSize = proof.size / 1024 / 1024;
+      if (imageSize > 25) {
+        res.status(400).send("Provided proof is too large!");
+        return;
+      }
+      await new Promise((resolve, reject) => {
+        sharp(proof.path)
+          .resize(300)
+          .toBuffer()
+          .then((resized: Buffer) => {
+            const resizedBase64: string = resized.toString("base64");
+            proofURL = `data:${proof.type};base64,${resizedBase64}`;
+            resolve();
+          })
+          .catch(reject);
       });
-      proofURL = `data:${proof.type};base64,${bitmapAsBase64}`;
     }
     const winner = await Users.get(winner_id);
     await Bets.complete(bet, winner, proofURL);
