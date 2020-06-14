@@ -8,7 +8,7 @@ export const create = (
     throw new Error("Unable to create wager, amount must be greater than 0!");
   }
   return new Promise((resolve, reject) => {
-    fetch(`/api/v1/bets/${betId}/wagers/create`, {
+    fetch(`/api/v1/bets/${betId}/wagers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
