@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button, Grid, Header, Input } from "semantic-ui-react";
+import { Bets } from "../api/v1";
 
 interface Props {
   group: number;
@@ -23,29 +24,15 @@ export default class extends Component<Props, State> {
 
   _canCreateBet = (): boolean => {
     const { name } = this.state;
-    return name.length >= 3 && name.length <= 100;
+    return name.length >= 1 && name.length <= 100;
   }
 
   _createBet = () => {
     const { group } = this.props;
     const { name, description } = this.state;
     this.setState({ creatingBet: true });
-    fetch("/api/v1/bets/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        groupId: group,
-        name,
-        description
-      })
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
+    Bets.create(group, name, description)
+      .then(redirect => window.location.href = redirect)
       .catch(console.error);
   };
 

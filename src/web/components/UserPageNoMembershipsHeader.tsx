@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Header } from "semantic-ui-react";
-import { DetailedUser } from "../lib/v1";
+import { DetailedUser } from "../../lib/v1";
 
 interface Props {
   data?: DetailedUser;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Pie } from "react-chartjs-2";
 import { Header } from "semantic-ui-react";
-import { DetailedUser, constants } from "../lib/v1";
+import { DetailedUser, constants } from "../../lib/v1";
 
 interface Props {
   data?: DetailedUser;

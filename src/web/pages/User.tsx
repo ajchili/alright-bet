@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Segment } from "semantic-ui-react";
-import { DetailedUser } from "../lib/v1";
+import { Users } from "../api/v1";
+import { DetailedUser } from "../../lib/v1";
 import UserHeader from "../components/UserPageHeader";
 import UserMarbleChart from "../components/UserPageMarbleChart";
 import UserNoMembershipsHeader from "../components/UserPageNoMembershipsHeader";
@@ -29,24 +30,17 @@ export default class extends Component<Props, State> {
     }
   }
 
+  componentWillReceiveProps(): void {
+    this.setState({ data: undefined }, this._loadUserData);
+  }
+
   _loadUserData = () => {
     const { id } = this.props;
     if (id === undefined) {
       return;
     }
-    fetch(`/api/v1/users/${id}`)
-      .then(response => {
-        switch (response.status) {
-          case 200:
-            return response.json();
-          default:
-            throw response;
-        }
-      })
-      .then(json => {
-        const data = json as DetailedUser;
-        this.setState({ data });
-      })
+    Users.get(id)
+      .then(data => this.setState({ data }))
       .catch(console.error);
   };
 

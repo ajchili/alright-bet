@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Popup, Table } from "semantic-ui-react";
-import { ActiveBet } from "../lib/v1";
+import { ActiveBet } from "../../lib/v1";
 import UserPill from "./UserPill";
 
 interface Props {

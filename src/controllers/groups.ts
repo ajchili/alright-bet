@@ -13,7 +13,7 @@ export const destroy = async (group: Group): Promise<void> => {
   await groups.destroy(group.id);
 };
 
-export const find = async (id: number) => {
+export const get = async (id: number) => {
   return await groups.find(id);
 };
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
-import { Bet, DetailedUser, User, Group } from "./lib/v1";
+import { Bet, DetailedUser, User, Group } from "../lib/v1";
 import Navbar from "./components/Navbar";
 import Pages from "./pages";
 

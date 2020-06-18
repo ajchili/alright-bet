@@ -8,7 +8,8 @@ import {
   Popup,
   Segment
 } from "semantic-ui-react";
-import { Bet, DetailedWager, User } from "../lib/v1";
+import { Bets, Discord, Wagers } from "../api/v1";
+import { Bet, DetailedWager, User } from "../../lib/v1";
 import BetWagersTable from "./BetWagersTable";
 import CompleteWagerMessage from "./CompleteWagerMessage";
 import MakeWager from "./MakeWager";
@@ -89,11 +90,8 @@ export default class extends Component<Props, State> {
     const { bet } = this.props;
     const id = typeof bet === "number" ? bet : bet.id;
     return new Promise((resolve, reject) => {
-      fetch(`/api/v1/bets/${id}`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({ bet: json as Bet }, resolve);
-        })
+      Bets.get(id)
+        .then((_bet: Bet) => this.setState({ bet: _bet }, resolve))
         .catch(reject);
     });
   }
@@ -102,11 +100,8 @@ export default class extends Component<Props, State> {
     const { bet } = this.props;
     const id = typeof bet === "number" ? bet : bet.id;
     return new Promise((resolve, reject) => {
-      fetch(`/api/v1/bets/${id}/wagers`)
-        .then(response => response.json())
-        .then(json => {
-          this.setState({ wagers: json as DetailedWager[] }, resolve);
-        })
+      Wagers.getForBet(id)
+        .then((wagers: DetailedWager[]) => this.setState({ wagers }, resolve))
         .catch(reject);
     });
   }
@@ -185,7 +180,7 @@ export default class extends Component<Props, State> {
                     <Header as='h4' image>
                       {winner.avatar &&
                         <Image
-                          src={`https://cdn.discordapp.com/avatars/${winner.id}/${winner.avatar}.png`}
+                          src={Discord.getAvatarURL(winner)}
                           rounded
                           size='mini'
                         />

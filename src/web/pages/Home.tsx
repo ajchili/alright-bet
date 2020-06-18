@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Grid } from "semantic-ui-react";
 import GroupList from "../components/GroupList";
 import GroupOverview from "../components/GroupOverview";
-import { Group, User } from "../lib/v1";
+import { Group, User } from "../../lib/v1";
 
 interface Props {
   groups: Group[];

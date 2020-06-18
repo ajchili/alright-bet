@@ -1,15 +1,23 @@
-import { Router, Request, Response } from "express";
-import formidable from "express-formidable";
+import { Request, Response } from "express";
 import fs from "fs";
-import * as Bets from "../../controllers/bets";
-import * as Groups from "../../controllers/groups";
-import * as Members from "../../controllers/members";
-import * as Users from "../../controllers/users";
-import * as Wagers from "../../controllers/wagers";
+import sharp from "sharp";
+import { Bets, Groups, Users } from "../../controllers";
 
-const router = Router();
+const handleError = (res: Response, err: Error) => {
+  switch (err.message) {
+    case "Bet does not exist!":
+      res.status(404).send();
+      break;
+    case "Group does not exist!":
+      res.status(404).send();
+      break;
+    default:
+      res.status(500).send();
+      break;
+  }
+};
 
-router.post("/create", async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {
     res.status(401).redirect("/");
@@ -22,143 +30,43 @@ router.post("/create", async (req: Request, res: Response) => {
   }
   try {
     const groupId = parseInt(id, 10);
-    const group = await Groups.find(groupId);
+    const group = await Groups.get(groupId);
     await Bets.create(user, group, name, description);
-    res.status(200).send({ redirect: `/?group=${group.id}` });
+    res.status(200).json({ redirect: `/?group=${group.id}` });
   } catch (err) {
-    switch (err.message) {
-      case "Group does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
+};
 
-router.get("/:id", async (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
-    res.status(200).send(bet);
+    const bet = await Bets.get(betId);
+    res.status(200).json(bet);
   } catch (err) {
-    switch (err.message) {
-      case "Bet does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
+};
 
-router.get("/:id/wagers", async (req: Request, res: Response) => {
+export const getBetsForGroup = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const { active = "false" } = req.query;
   try {
-    const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
-    const wagers = await Wagers.getForBet(bet);
-    const betters = new Set();
-    wagers.forEach((wager) => {
-      if (betters.has(wager.user_id)) {
-        wager.amended = true;
-      }
-      betters.add(wager.user_id);
-    });
-    res.status(200).json(wagers);
+    const groupId = parseInt(id, 10);
+    const group = await Groups.get(groupId);
+    if (active === "true") {
+      const activeBets = await Bets.getActiveForGroup(group);
+      res.status(200).json(activeBets);
+    } else {
+      res.status(200).json([]);
+    }
   } catch (err) {
-    switch (err.message) {
-      case "Bet does not exist!":
-      case "Group does not exist!":
-      case "Member does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
+};
 
-router.post("/:id/wagers/create", async (req: Request, res: Response) => {
-  const { user } = req.cookies;
-  if (!user) {
-    res.status(401).redirect("/");
-    return;
-  }
-  const { id } = req.params;
-  const { amount = 0 } = req.body;
-  const wager = parseInt(amount, 10);
-  if (isNaN(wager) || wager === 0) {
-    res.status(400).send();
-    return;
-  }
-  try {
-    const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
-    const group = await Groups.find(bet.group_id);
-    const member = await Members.find(user, group);
-    const previousWager = await Wagers.getMostRecentWagerForBet(member, bet);
-    const maxWager = previousWager + wager;
-    if (wager < 1 || wager > maxWager) {
-      res.status(400).send();
-      return;
-    }
-    await Wagers.create(member, bet, wager);
-    member.currency = member.currency + previousWager - wager;
-    await Members.update(member);
-    res.status(200).json({ redirect: `/bets/${bet.id}` });
-  } catch (err) {
-    switch (err.message) {
-      case "Bet does not exist!":
-      case "Group does not exist!":
-      case "Member does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
-  }
-});
-
-router.delete("/:id/wagers", async (req: Request, res: Response) => {
-  const { user } = req.cookies;
-  if (!user) {
-    res.status(401).redirect("/");
-    return;
-  }
-  const { id } = req.params;
-  try {
-    const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
-    const group = await Groups.find(bet.group_id);
-    const member = await Members.find(user, group);
-    const previousWager = await Wagers.getMostRecentWagerForBet(member, bet);
-    await Wagers.create(member, bet, 0);
-    member.currency = member.currency + previousWager;
-    await Members.update(member);
-    res.status(200).json({ redirect: `/bets/${bet.id}` });
-  } catch (err) {
-    switch (err.message) {
-      case "Bet does not exist!":
-      case "Group does not exist!":
-      case "Member does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
-  }
-});
-
-router.use(formidable());
-
-router.post("/:id/complete", async (req: Request, res: Response) => {
+export const complete = async (req: Request, res: Response) => {
   const { user } = req.cookies;
   if (!user) {
     res.status(401).redirect("/");
@@ -174,31 +82,33 @@ router.post("/:id/complete", async (req: Request, res: Response) => {
   }
   try {
     const betId = parseInt(id, 10);
-    const bet = await Bets.find(betId);
+    const bet = await Bets.get(betId);
     if (bet.creator_id !== user.id) {
       res.status(401).redirect("/");
       return;
     }
     if (proof !== undefined) {
-      const bitmapAsBase64 = fs.readFileSync(proof.path, {
-        encoding: "base64",
+      const imageSize = proof.size / 1024 / 1024;
+      if (imageSize > 25) {
+        res.status(400).send("Provided proof is too large!");
+        return;
+      }
+      await new Promise((resolve, reject) => {
+        sharp(proof.path)
+          .resize(300)
+          .toBuffer()
+          .then((resized: Buffer) => {
+            const resizedBase64: string = resized.toString("base64");
+            proofURL = `data:${proof.type};base64,${resizedBase64}`;
+            resolve();
+          })
+          .catch(reject);
       });
-      proofURL = `data:${proof.type};base64,${bitmapAsBase64}`;
     }
-    const winner = await Users.find(winner_id);
+    const winner = await Users.get(winner_id);
     await Bets.complete(bet, winner, proofURL);
     res.status(200).json({ proofURL, redirect: `/bets/${bet.id}` });
   } catch (err) {
-    console.error(err);
-    switch (err.message) {
-      case "Bet does not exist!":
-        res.status(404).send();
-        break;
-      default:
-        res.status(500).send();
-        break;
-    }
+    handleError(res, err);
   }
-});
-
-export default router;
+};

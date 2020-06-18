@@ -8,13 +8,13 @@
   "proxy": "localhost:80",
   "scripts": {
     "clear": "rm -rf ./dist ./bundle",
-    "lint": "tslint -c tslint.json -p tsconfig.server.json --fix",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "prebuild": "yarn clear",
     "build": "yarn build:server && yarn build:web",
-    "build:server": "tsc --project tsconfig.server.json",
+    "build:server": "tsc --project tsconfig.json",
     "build:web": "yarn webpack --progress",
     "dev:server": "nodemon --watch src -e ts,tsx --exec yarn dev:server:start",
-    "dev:server:start": "ts-node --project tsconfig.server.json .",
+    "dev:server:start": "ts-node --project tsconfig.json .",
     "dev:web": "yarn webpack --watch --progress",
     "start": "node ./dist/server.js"
   },
@@ -37,7 +37,8 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
-    "semantic-ui-react": "^0.88.2"
+    "semantic-ui-react": "^0.88.2",
+    "sharp": "^0.25.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -59,6 +60,7 @@
     "@types/react-chartjs-2": "^2.5.7",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
+    "@types/sharp": "^0.25.0",
     "babel-loader": "^8.1.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",

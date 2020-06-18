@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { getMe } from "../api/v1/discord";
 import { User } from "../lib/v1";
 
-export default async (req: Request, _: Response, next: NextFunction) => {
-  const token = req.session.accessToken;
+export default async (req: Request, res: Response, next: NextFunction) => {
+  const token: string | undefined = req.session.accessToken;
   if (token !== undefined && token.length > 0) {
     const decodedAccessToken = jwt.decode(token, { json: true });
     const { accessToken, exp: tokenExpiresAt = 0 } = decodedAccessToken;
@@ -17,9 +17,8 @@ export default async (req: Request, _: Response, next: NextFunction) => {
           user,
         };
       }
-    } catch (err) {
-      // TODO: Handle error
-      console.error(err);
+    } catch {
+      res.status(500).send();
     }
   }
   next();

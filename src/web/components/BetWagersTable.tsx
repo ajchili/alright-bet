@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table } from "semantic-ui-react";
-import { DetailedWager } from "../lib/v1";
+import { DetailedWager } from "../../lib/v1";
 import BetWagersTableRow from "./BetWagersTableRow";
 
 interface Props {

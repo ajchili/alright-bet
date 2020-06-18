@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Icon, Input, Menu } from "semantic-ui-react";
-import { Group } from "../lib/v1";
+import { Group } from "../../lib/v1";
 
 interface Props {
   groups: Group[];

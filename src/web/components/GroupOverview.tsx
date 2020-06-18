@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Header, Message, Popup, Segment } from "semantic-ui-react";
-import { ActiveBet, DetailedWager, Group, GroupMember, User } from "../lib/v1";
+import { Bets, Groups, Wagers } from "../api/v1";
+import { ActiveBet, Group, GroupMember, User } from "../../lib/v1";
 import ActiveBetsTable from "./ActiveBetsTable";
 
 interface Props {
@@ -44,14 +45,8 @@ export default class extends Component<Props, State> {
   _stimulateEconomy = () => {
     const { group } = this.props;
     this.setState({ loading: true });
-    fetch(`/api/v1/groups/${group.id}/stimulateEconomy`, {
-      method: "POST"
-    })
-      .then(response => response.json())
-      .then(json => {
-        const { redirect = "/" } = json;
-        window.location.href = redirect;
-      })
+    Groups.stimulateEconomy(group.id)
+      .then(() => this.setState({ loading: false }))
       .catch(console.error);
   };
 
@@ -59,14 +54,8 @@ export default class extends Component<Props, State> {
     const { group } = this.props;
     if (confirm("Are your sure you want to delete this group?")) {
       this.setState({ loading: true });
-      fetch(`/api/v1/groups/${group.id}`, {
-        method: "DELETE"
-      })
-        .then(response => response.json())
-        .then(json => {
-          const { redirect = "/" } = json;
-          window.location.href = redirect;
-        })
+      Groups.remove(group.id)
+        .then(() => window.location.href = "")
         .catch(console.error);
     }
   };
@@ -93,22 +82,18 @@ export default class extends Component<Props, State> {
       this._loadGroupOwner(),
       this._loadGroupMembers()
     ])
-      .then(() => this.setState({ loading: false }));
+      .then(() => this.setState({ loading: false }))
+      .catch(console.error);
   };
 
   _loadGroupActiveBets = () => {
     const { group } = this.props;
     return new Promise((resolve, reject) => {
-      fetch(`/api/v1/groups/${group.id}/bets`)
-        .then(response => response.json())
-        .then(json => {
-          const activeBets: ActiveBet[] = json as ActiveBet[];
-          return activeBets;
-        })
+      Bets.getActiveForGroup(group.id)
         .then(activeBets => {
           const wagerPromises = activeBets.map((activeBet: ActiveBet, i: number) => {
-            return new Promise((resolve, reject) => {
-              this._loadGroupActiveBetWagers(activeBet)
+            return new Promise((_resolve, _reject) => {
+              Wagers.getForBet(activeBet.id)
                 .then(wagers => {
                   const betterIds = new Set(wagers.map(wager => wager.user_id));
                   activeBets[i].betters = Array.from(betterIds).map(id => {
@@ -121,9 +106,9 @@ export default class extends Component<Props, State> {
                     };
                   });
                   activeBets[i].wagers = wagers.length;
-                  resolve();
+                  _resolve();
                 })
-                .catch(reject);
+                .catch(_reject);
             });
           });
           Promise.all(wagerPromises)
@@ -134,25 +119,11 @@ export default class extends Component<Props, State> {
     });
   };
 
-  _loadGroupActiveBetWagers = (bet: ActiveBet): Promise<DetailedWager[]> => {
-    return new Promise((resolve, reject) => {
-      fetch(`/api/v1/bets/${bet.id}/wagers`)
-        .then(response => response.json())
-        .then(json => {
-          const detailedWagers: DetailedWager[] = json as DetailedWager[];
-          resolve(detailedWagers);
-        })
-        .catch(reject);
-    });
-  };
-
   _loadGroupOwner = () => {
     const { group } = this.props;
     return new Promise((resolve, reject) => {
-      fetch(`/api/v1/groups/${group.id}/owner`)
-        .then(response => response.json())
-        .then(json => {
-          const owner = json as User;
+      Groups.getOwner(group.id)
+        .then(owner => {
           this.setState({ owner }, resolve);
         })
         .catch(reject);
